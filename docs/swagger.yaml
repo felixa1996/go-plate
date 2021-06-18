@@ -1,0 +1,119 @@
+basePath: /
+definitions:
+  domain.Account:
+    properties:
+      Balance:
+        example: 40000
+        type: integer
+      Cpf:
+        example: 00.00.111.11
+        type: string
+      CreatedAt:
+        example: "2019-11-09T21:21:46+00:00"
+        type: string
+      id:
+        example: "1"
+        type: string
+      name:
+        example: Leo Messi
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: felixanthony1996.fa@gmail.com
+  description: Auth API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Auth API
+  version: "1.0"
+paths:
+  /v1/accounts:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Account'
+      security:
+      - ApiKeyAuth: []
+      summary: Find All Account
+      tags:
+      - Accounts
+    post:
+      consumes:
+      - application/json
+      description: Create account
+      parameters:
+      - description: Create account
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Account'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Account'
+      summary: Create account
+      tags:
+      - Accounts
+  /v1/accounts/{account_id}/balance:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Account ID
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Account'
+      security:
+      - ApiKeyAuth: []
+      summary: Find Balance Account By ID
+      tags:
+      - Accounts
+  /v1/accounts/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Account'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Account By ID
+      tags:
+      - Accounts
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,26 @@
+paths:
+  /account:
+    get:
+      description: Returns a list of acccounts
+      operationId: listAccounts
+      responses:
+        "200":
+          $ref: '#/responses/accountsResponse'
+      tags:
+      - account
+responses:
+  accountsResponse:
+    description: List of Accounts Response
+    headers:
+      balance:
+        format: double
+        type: number
+      cpf:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+swagger: "2.0"
