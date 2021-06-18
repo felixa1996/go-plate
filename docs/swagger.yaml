@@ -33,32 +33,32 @@ paths:
   /v1/accounts:
     get:
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Account'
       security:
-      - ApiKeyAuth: []
+        - ApiKeyAuth: []
       summary: Find All Account
       tags:
-      - Accounts
+        - Accounts
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create account
       parameters:
-      - description: Create account
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/domain.Account'
+        - description: Create account
+          in: body
+          name: data
+          required: true
+          schema:
+            $ref: '#/definitions/domain.Account'
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
@@ -66,51 +66,51 @@ paths:
             $ref: '#/definitions/domain.Account'
       summary: Create account
       tags:
-      - Accounts
+        - Accounts
   /v1/accounts/{account_id}/balance:
     get:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: Account ID
-        in: path
-        name: account_id
-        required: true
-        type: string
+        - description: Account ID
+          in: path
+          name: account_id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Account'
       security:
-      - ApiKeyAuth: []
+        - ApiKeyAuth: []
       summary: Find Balance Account By ID
       tags:
-      - Accounts
+        - Accounts
   /v1/accounts/{id}:
     delete:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: Account ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Account ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Account'
       security:
-      - ApiKeyAuth: []
+        - ApiKeyAuth: []
       summary: Delete Account By ID
       tags:
-      - Accounts
+        - Accounts
 securityDefinitions:
   ApiKeyAuth:
     in: header

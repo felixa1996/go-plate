@@ -9,13 +9,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/felixa1996/go-plate/adapter/api/action"
 	"github.com/felixa1996/go-plate/adapter/logger"
 	"github.com/felixa1996/go-plate/adapter/presenter"
 	"github.com/felixa1996/go-plate/adapter/repository"
 	"github.com/felixa1996/go-plate/adapter/validator"
 	"github.com/felixa1996/go-plate/usecase"
+	"github.com/gin-gonic/gin"
 )
 
 type ginEngine struct {

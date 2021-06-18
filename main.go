@@ -18,7 +18,7 @@ func main() {
 		Logger(log.InstanceLogrusLogger).
 		Validator(validation.InstanceGoPlayground).
 		DbSQL(database.InstancePostgres)
-		//DbNoSQL(database.InstanceMongoDB)
+	//DbNoSQL(database.InstanceMongoDB)
 
 	app.WebServerPort("3000").
 		WebServer(router.InstanceGorillaMux).

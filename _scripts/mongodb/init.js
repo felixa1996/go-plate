@@ -12,6 +12,6 @@ db.createUser({
 });
 
 accounts = db.createCollection('accounts');
-db.accounts.createIndex( { "cpf": 1 }, { unique: true } )
+db.accounts.createIndex({"cpf": 1}, {unique: true})
 
 db.createCollection('transfers');

@@ -7,7 +7,7 @@ paths:
         "200":
           $ref: '#/responses/accountsResponse'
       tags:
-      - account
+        - account
 responses:
   accountsResponse:
     description: List of Accounts Response

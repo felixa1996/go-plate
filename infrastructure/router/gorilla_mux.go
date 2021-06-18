@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"fmt"
+	"github.com/felixa1996/go-plate/infrastructure/route"
 	"net/http"
 	"os"
 	"os/signal"
@@ -106,7 +107,6 @@ func (g gorillaMux) Listen() {
 func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api := router.PathPrefix("/v1").Subrouter()
 
-	api.Handle("/transfers", g.buildCreateTransferAction()).Methods(http.MethodPost)
 	api.Handle("/transfers", g.buildFindAllTransferAction()).Methods(http.MethodGet)
 
 	api.Handle("/accounts/{account_id}/balance", g.buildFindBalanceAccountAction()).Methods(http.MethodGet)
@@ -115,28 +115,6 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
 	api.HandleFunc("/health", action.HealthCheck).Methods(http.MethodGet)
-}
-
-func (g gorillaMux) buildCreateTransferAction() *negroni.Negroni {
-	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var (
-			uc = usecase.NewCreateTransferInteractor(
-				repository.NewTransferSQL(g.db),
-				repository.NewAccountSQL(g.db),
-				presenter.NewCreateTransferPresenter(),
-				g.ctxTimeout,
-			)
-			act = action.NewCreateTransferAction(uc, g.log, g.validator)
-		)
-
-		act.Execute(res, req)
-	}
-
-	return negroni.New(
-		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
-		negroni.NewRecovery(),
-		negroni.Wrap(handler),
-	)
 }
 
 func (g gorillaMux) buildFindAllTransferAction() *negroni.Negroni {
@@ -200,15 +178,7 @@ func (g gorillaMux) buildCreateAccountAction() *negroni.Negroni {
 // @Router /v1/accounts [get]
 func (g gorillaMux) buildFindAllAccountAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var (
-			uc = usecase.NewFindAllAccountInteractor(
-				repository.NewAccountSQL(g.db),
-				presenter.NewFindAllAccountPresenter(),
-				g.ctxTimeout,
-			)
-			act = action.NewFindAllAccountAction(uc, g.log)
-		)
-
+		var act = route.AccountFindAll(g.db, g.log, g.ctxTimeout)
 		act.Execute(res, req)
 	}
 
