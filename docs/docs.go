@@ -47,7 +47,7 @@ var doc = `{
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "Find All Account",
+                "summary": "Find All Accounts",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -211,11 +211,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:3000",
+	Host:        "localhost:8000/vhry/data/",
 	BasePath:    "/",
 	Schemes:     []string{},
-	Title:       "Auth API",
-	Description: "Auth API",
+	Title:       "Data API",
+	Description: "Data API",
 }
 
 type s struct{}

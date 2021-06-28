@@ -27,11 +27,11 @@ func newConfigMongoDB() *config {
 
 func newConfigPostgres() *config {
 	return &config{
-		host:     "localhost",
-		database: "bank",
+		host:     "mord_db",
+		database: "vhry",
 		port:     "5432",
 		driver:   "postgres",
-		user:     "postgres",
-		password: "katasandi2",
+		user:     "root",
+		password: "VTwUrUEeuyBTL",
 	}
 }

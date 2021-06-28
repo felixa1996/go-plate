@@ -1,185 +1,185 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "description": "Auth API",
-    "title": "Auth API",
-    "termsOfService": "http://swagger.io/terms/",
-    "contact": {
-      "email": "felixanthony1996.fa@gmail.com"
+    "swagger": "2.0",
+    "info": {
+        "description": "Data API",
+        "title": "Data API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "email": "felixanthony1996.fa@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
     },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    "host": "localhost:8000/vhry/data/",
+    "basePath": "/",
+    "paths": {
+        "/v1/accounts": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Find All Accounts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Account"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create account",
+                "parameters": [
+                    {
+                        "description": "Create account",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Account"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/accounts/{account_id}/balance": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Find Balance Account By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "account_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/accounts/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Delete Account By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Account"
+                        }
+                    }
+                }
+            }
+        }
     },
-    "version": "1.0"
-  },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "paths": {
-    "/v1/accounts": {
-      "get": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Accounts"
-        ],
-        "summary": "Find All Account",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/domain.Account"
+    "definitions": {
+        "domain.Account": {
+            "type": "object",
+            "properties": {
+                "Balance": {
+                    "type": "integer",
+                    "example": 40000
+                },
+                "Cpf": {
+                    "type": "string",
+                    "example": "00.00.111.11"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Leo Messi"
+                }
             }
-          }
         }
-      },
-      "post": {
-        "description": "Create account",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Accounts"
-        ],
-        "summary": "Create account",
-        "parameters": [
-          {
-            "description": "Create account",
-            "name": "data",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/domain.Account"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/domain.Account"
-            }
-          }
-        }
-      }
     },
-    "/v1/accounts/{account_id}/balance": {
-      "get": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Accounts"
-        ],
-        "summary": "Find Balance Account By ID",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Account ID",
-            "name": "account_id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/domain.Account"
-            }
-          }
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
-      }
-    },
-    "/v1/accounts/{id}": {
-      "delete": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Accounts"
-        ],
-        "summary": "Delete Account By ID",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Account ID",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/domain.Account"
-            }
-          }
-        }
-      }
     }
-  },
-  "definitions": {
-    "domain.Account": {
-      "type": "object",
-      "properties": {
-        "Balance": {
-          "type": "integer",
-          "example": 40000
-        },
-        "Cpf": {
-          "type": "string",
-          "example": "00.00.111.11"
-        },
-        "CreatedAt": {
-          "type": "string",
-          "example": "2019-11-09T21:21:46+00:00"
-        },
-        "id": {
-          "type": "string",
-          "example": "1"
-        },
-        "name": {
-          "type": "string",
-          "example": "Leo Messi"
-        }
-      }
-    }
-  },
-  "securityDefinitions": {
-    "ApiKeyAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
-  }
 }

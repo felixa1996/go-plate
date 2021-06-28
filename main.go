@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/felixa1996/go-plate/infrastructure/database"
 	"os"
 	"time"
+
+	"github.com/felixa1996/go-plate/infrastructure/database"
 
 	"github.com/felixa1996/go-plate/infrastructure"
 	"github.com/felixa1996/go-plate/infrastructure/log"
@@ -20,7 +21,7 @@ func main() {
 		DbSQL(database.InstancePostgres)
 	//DbNoSQL(database.InstanceMongoDB)
 
-	app.WebServerPort("3000").
+	app.WebServerPort("80").
 		WebServer(router.InstanceGorillaMux).
 		Start()
 }

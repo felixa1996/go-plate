@@ -18,47 +18,47 @@ definitions:
         example: Leo Messi
         type: string
     type: object
-host: localhost:3000
+host: localhost:8000/vhry/data/
 info:
   contact:
     email: felixanthony1996.fa@gmail.com
-  description: Auth API
+  description: Data API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Auth API
+  title: Data API
   version: "1.0"
 paths:
   /v1/accounts:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Account'
       security:
-        - ApiKeyAuth: []
-      summary: Find All Account
+      - ApiKeyAuth: []
+      summary: Find All Accounts
       tags:
-        - Accounts
+      - Accounts
     post:
       consumes:
-        - application/json
+      - application/json
       description: Create account
       parameters:
-        - description: Create account
-          in: body
-          name: data
-          required: true
-          schema:
-            $ref: '#/definitions/domain.Account'
+      - description: Create account
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Account'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -66,51 +66,51 @@ paths:
             $ref: '#/definitions/domain.Account'
       summary: Create account
       tags:
-        - Accounts
+      - Accounts
   /v1/accounts/{account_id}/balance:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: Account ID
-          in: path
-          name: account_id
-          required: true
-          type: string
+      - description: Account ID
+        in: path
+        name: account_id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Account'
       security:
-        - ApiKeyAuth: []
+      - ApiKeyAuth: []
       summary: Find Balance Account By ID
       tags:
-        - Accounts
+      - Accounts
   /v1/accounts/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: Account ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Account'
       security:
-        - ApiKeyAuth: []
+      - ApiKeyAuth: []
       summary: Delete Account By ID
       tags:
-        - Accounts
+      - Accounts
 securityDefinitions:
   ApiKeyAuth:
     in: header

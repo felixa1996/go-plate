@@ -13,7 +13,6 @@ FROM base AS development
 WORKDIR /app
 COPY . .
 RUN go get github.com/pilu/fresh
-EXPOSE 3001
 ENTRYPOINT ["fresh"]
 
 FROM base AS builder
@@ -24,5 +23,4 @@ RUN go build -a --installsuffix cgo --ldflags="-s" -o main
 FROM alpine:latest AS production
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /app .
-EXPOSE 3001
 ENTRYPOINT ["./main"]

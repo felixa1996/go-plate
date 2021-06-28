@@ -3,12 +3,13 @@ package router
 import (
 	"context"
 	"fmt"
-	"github.com/felixa1996/go-plate/infrastructure/route"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/felixa1996/go-plate/infrastructure/route"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 
@@ -55,14 +56,14 @@ func newGorillaMux(
 	}
 }
 
-// @title Auth API
+// @title Data API
 // @version 1.0
-// @description Auth API
+// @description Data API
 // @termsOfService http://swagger.io/terms/
 // @contact.email felixanthony1996.fa@gmail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:3000
+// @host localhost:8000/vhry/data/
 // @BasePath /
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
@@ -169,7 +170,7 @@ func (g gorillaMux) buildCreateAccountAction() *negroni.Negroni {
 }
 
 // FindAccounts godoc
-// @Summary Find All Account
+// @Summary Find All Accounts
 // @Tags Accounts
 // @Security ApiKeyAuth
 // @Accept  json
