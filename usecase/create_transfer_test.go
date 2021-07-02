@@ -435,7 +435,7 @@ func TestTransferCreateInteractor_Execute(t *testing.T) {
 				},
 				findByIDOriginFake: func() (domain.Account, error) {
 					return domain.NewAccount(
-						"3c096a40-ccba-4b58-93ed-57379ab04681",
+						"3c096a40-ccba-4b58-93ed-57379ab04680",
 						"Test",
 						"08098565895",
 						0,
@@ -444,7 +444,7 @@ func TestTransferCreateInteractor_Execute(t *testing.T) {
 				},
 				findByIDDestinationFake: func() (domain.Account, error) {
 					return domain.NewAccount(
-						"3c096a40-ccba-4b58-93ed-57379ab04682",
+						"3c096a40-ccba-4b58-93ed-57379ab04681",
 						"Test2",
 						"13098565491",
 						0,
@@ -455,7 +455,7 @@ func TestTransferCreateInteractor_Execute(t *testing.T) {
 			presenter: mockCreateTransferPresenter{
 				result: CreateTransferOutput{},
 			},
-			expectedError: "origin account does not have sufficient balance",
+			expectedError: "origin account does not have sufficient Balance",
 			expected:      CreateTransferOutput{},
 		},
 	}
