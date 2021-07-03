@@ -115,6 +115,8 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildCreateAccountAction()).Methods(http.MethodPost)
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
+	api.Handle("/charity-mrys", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
+
 	api.HandleFunc("/health", action.HealthCheck).Methods(http.MethodGet)
 }
 
@@ -180,6 +182,27 @@ func (g gorillaMux) buildCreateAccountAction() *negroni.Negroni {
 func (g gorillaMux) buildFindAllAccountAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		var act = route.AccountFindAll(g.db, g.log, g.ctxTimeout)
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// FindCharityMrys godoc
+// @Summary Find All CharityMrys
+// @Tags CharityMrys
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} domain.CharityMrys
+// @Router /v1/charity-mrys [get]
+func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		var act = route.CharityMrysFindAll(g.db, g.log, g.ctxTimeout)
 		act.Execute(res, req)
 	}
 

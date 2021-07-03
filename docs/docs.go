@@ -161,6 +161,33 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/v1/charity-mrys": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Find All CharityMrys",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -178,6 +205,39 @@ var doc = `{
                 "CreatedAt": {
                     "type": "string",
                     "example": "2019-11-09T21:21:46+00:00"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Leo Messi"
+                }
+            }
+        },
+        "domain.CharityMrys": {
+            "type": "object",
+            "properties": {
+                "Amount": {
+                    "type": "integer",
+                    "example": 40000
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
+                },
+                "Description": {
+                    "type": "string",
+                    "example": "description"
+                },
+                "Month": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Year": {
+                    "type": "integer",
+                    "example": 2021
                 },
                 "id": {
                     "type": "string",

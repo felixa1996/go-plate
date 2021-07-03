@@ -9,3 +9,5 @@ http://localhost:8000/vhry/data/swagger/index.html
 
 **Generate Swagger Documentation**
 make generate_swagger
+
+go get -v -u github.com/swaggo/swag/cmd/swag
