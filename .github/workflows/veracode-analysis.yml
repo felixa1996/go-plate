@@ -4,10 +4,10 @@ name: Veracode Static Analysis Pipeline Scan
 
 on:
   push:
-    branches: [ main ]
+    branches: [ vhry ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ main ]
+    branches: [ vhry ]
   schedule:
     - cron: '20 14 * * 5'
 
