@@ -1,10 +1,10 @@
 on:
   push:
     branches:
-      - master
+      - vhry
   pull_request:
     branches:
-      - master
+      - vhry
 
 name: run tests
 jobs:
