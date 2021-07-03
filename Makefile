@@ -1,5 +1,5 @@
 ENVIRONMENT=development
-SYSTEM=go-bank-transfer
+SYSTEM=vhry
 SYSTEM_VERSION=$(shell git branch --show-current | cut -d '/' -f2)
 PWD=$(shell pwd -L)
 DOCKER_RUN=docker run --rm -it -w /app -v ${PWD}:/app -v ${GOPATH}/pkg/mod/cache:/go/pkg/mod/cache golang:1.16-buster
@@ -87,26 +87,11 @@ run: ## Run golang project
 
 .PHONY: docker-clean
 docker-clean: ## Clean docker removes image
-	docker rmi gsabadini/$(SYSTEM):$(SYSTEM_VERSION)
+	docker rmi felixa/$(SYSTEM):$(SYSTEM_VERSION)
 
 .PHONY: docker-build
 docker-build: ## Build docker image for the project
-	@docker build --target production -t gsabadini/$(SYSTEM):$(SYSTEM_VERSION) .
-
-.PHONY: docker-run
-docker-run: docker-deps ## Run docker container for image project
-	docker run --rm -it \
-	-e ENVIRONMENT=$(ENVIRONMENT) \
-	-e SYSTEM=$(SYSTEM) \
-	-e SYSTEM_VERSION=$(SYSTEM_VERSION) \
-	-p 3001:3001 \
-	--env-file .env \
-	--network go-bank-transfer_bank  \
-	--name $(SYSTEM)-$(SYSTEM_VERSION) gsabadini/$(SYSTEM):$(SYSTEM_VERSION)
-
-docker-deps:
-	docker-compose up -d postgres mongodb-primary mongodb-secondary mongodb-arbiter
-	sleep 3
+	@docker build --target production -t felixa/$(SYSTEM):$(SYSTEM_VERSION) .
 
 generate_swagger:
 	swag init -g infrastructure/router/gorilla_mux.go
