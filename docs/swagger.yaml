@@ -18,6 +18,30 @@ definitions:
         example: Leo Messi
         type: string
     type: object
+  domain.CharityMrys:
+    properties:
+      Amount:
+        example: 40000
+        type: integer
+      CreatedAt:
+        example: "2019-11-09T21:21:46+00:00"
+        type: string
+      Description:
+        example: description
+        type: string
+      Month:
+        example: 1
+        type: integer
+      Year:
+        example: 2021
+        type: integer
+      id:
+        example: "1"
+        type: string
+      name:
+        example: Leo Messi
+        type: string
+    type: object
 host: localhost:8000/vhry/data/
 info:
   contact:
@@ -111,6 +135,44 @@ paths:
       summary: Delete Account By ID
       tags:
       - Accounts
+  /v1/charity-mrys:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.CharityMrys'
+      security:
+      - ApiKeyAuth: []
+      summary: Find All CharityMrys
+      tags:
+      - CharityMrys
+  /v1/charity-mrys/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.CharityMrys'
+      security:
+      - ApiKeyAuth: []
+      summary: Find One Charity Mrys By ID
+      tags:
+      - CharityMrys
 securityDefinitions:
   ApiKeyAuth:
     in: header

@@ -7,12 +7,15 @@ import (
 	"log"
 
 	"github.com/felixa1996/go-plate/adapter/repository"
+	"github.com/go-pg/pg/extra/pgdebug"
+	"github.com/go-pg/pg/v10"
 
 	_ "github.com/lib/pq"
 )
 
 type postgresHandler struct {
-	db *sql.DB
+	db   *sql.DB
+	dbPG *pg.DB
 }
 
 func NewPostgresHandler(c *config) (*postgresHandler, error) {
@@ -36,7 +39,32 @@ func NewPostgresHandler(c *config) (*postgresHandler, error) {
 		log.Fatalln(err)
 	}
 
-	return &postgresHandler{db: db}, nil
+	var dsPG = fmt.Sprintf(
+		"%s://%s:%s@%s:%s/%s?sslmode=disable",
+		c.driver,
+		c.user,
+		c.password,
+		c.host,
+		c.port,
+		c.database,
+	)
+
+	fmt.Println(dsPG)
+	opt, err := pg.ParseURL(dsPG)
+	if err != nil {
+		return &postgresHandler{}, err
+	}
+
+	dbPG := pg.Connect(opt)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	dbPG.AddQueryHook(pgdebug.DebugHook{
+		// Print all queries.
+		Verbose: true,
+	})
+
+	return &postgresHandler{db: db, dbPG: dbPG}, nil
 }
 
 func (p postgresHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
@@ -45,7 +73,12 @@ func (p postgresHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
 		return postgresTx{}, err
 	}
 
-	return newPostgresTx(tx), nil
+	txPg, err := p.dbPG.BeginContext(ctx)
+	if err != nil {
+		return postgresTx{}, err
+	}
+
+	return newPostgresTx(tx, txPg), nil
 }
 
 func (p postgresHandler) ExecuteContext(ctx context.Context, query string, args ...interface{}) error {
@@ -68,10 +101,27 @@ func (p postgresHandler) QueryContext(ctx context.Context, query string, args ..
 	return row, nil
 }
 
+func (p postgresHandler) QueryContextPG(ctx context.Context, model interface{}, query string, args ...interface{}) (pg.Result, error) {
+	rows, err := p.dbPG.QueryContext(ctx, model, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
+}
+
 func (p postgresHandler) QueryRowContext(ctx context.Context, query string, args ...interface{}) repository.Row {
 	row := p.db.QueryRowContext(ctx, query, args...)
 
 	return newPostgresRow(row)
+}
+
+func (p postgresHandler) QueryRowContextPG(ctx context.Context, model interface{}, query string, args ...interface{}) (pg.Result, error) {
+	row, err := p.dbPG.QueryOneContext(ctx, model, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return row, nil
 }
 
 type postgresRow struct {
@@ -119,11 +169,12 @@ func (pr postgresRows) Close() error {
 }
 
 type postgresTx struct {
-	tx *sql.Tx
+	tx   *sql.Tx
+	txPg *pg.Tx
 }
 
-func newPostgresTx(tx *sql.Tx) postgresTx {
-	return postgresTx{tx: tx}
+func newPostgresTx(tx *sql.Tx, txPg *pg.Tx) postgresTx {
+	return postgresTx{tx: tx, txPg: txPg}
 }
 
 func (p postgresTx) ExecuteContext(ctx context.Context, query string, args ...interface{}) error {
@@ -150,6 +201,15 @@ func (p postgresTx) QueryRowContext(ctx context.Context, query string, args ...i
 	row := p.tx.QueryRowContext(ctx, query, args...)
 
 	return newPostgresRow(row)
+}
+
+func (p postgresTx) QueryRowContextPG(ctx context.Context, model interface{}, query string, args ...interface{}) (pg.Result, error) {
+	row, err := p.txPg.QueryOneContext(ctx, model, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return row, nil
 }
 
 func (p postgresTx) Commit() error {
