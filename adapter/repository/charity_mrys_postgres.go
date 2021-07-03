@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/felixa1996/go-plate/domain"
 	"github.com/pkg/errors"
@@ -66,44 +65,14 @@ func (a CharityMrysSQL) Update(ctx context.Context, ID domain.CharityMrysID, cha
 func (a CharityMrysSQL) FindAll(ctx context.Context) ([]domain.CharityMrys, error) {
 	var query = "SELECT * FROM charity_mrys"
 
-	rows, err := a.db.QueryContext(ctx, query)
+	var list []domain.CharityMrys
+
+	_, err := a.db.QueryContextPG(ctx, &list, query)
 	if err != nil {
 		return []domain.CharityMrys{}, errors.Wrap(err, "error listing CharityMryss")
 	}
 
-	var CharityMryss = make([]domain.CharityMrys, 0)
-	for rows.Next() {
-		var (
-			ID          string
-			Name        string
-			Amount      int64
-			Month       int32
-			Year        int32
-			Description string
-			createdAt   time.Time
-		)
-
-		if err = rows.Scan(&ID, &Name, &Amount, &Month, &Year, &Description, &createdAt); err != nil {
-			return []domain.CharityMrys{}, errors.Wrap(err, "error listing CharityMryss")
-		}
-
-		CharityMryss = append(CharityMryss, domain.NewCharityMrys(
-			domain.CharityMrysID(ID),
-			Name,
-			domain.Money(Amount),
-			Month,
-			Year,
-			Description,
-			createdAt,
-		))
-	}
-	defer rows.Close()
-
-	if err = rows.Err(); err != nil {
-		return []domain.CharityMrys{}, err
-	}
-
-	return CharityMryss, nil
+	return list, nil
 }
 
 func (a CharityMrysSQL) FindByID(ctx context.Context, ID domain.CharityMrysID) (domain.CharityMrys, error) {
@@ -116,32 +85,15 @@ func (a CharityMrysSQL) FindByID(ctx context.Context, ID domain.CharityMrysID) (
 		}
 	}
 
-	var (
-		query       = "SELECT * FROM charity_mrys WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE"
-		id          string
-		name        string
-		amount      int32
-		month       int32
-		year        int32
-		description string
-		createdAt   time.Time
-	)
+	var one domain.CharityMrys
 
-	err := tx.QueryRowContext(ctx, query, ID).Scan(&id, &name, &amount, &month, &year, &description, &createdAt)
-	switch {
-	case err == sql.ErrNoRows:
+	query := "SELECT * FROM charity_mrys WHERE id = ? LIMIT 1"
+
+	_, err := tx.QueryRowContextPG(ctx, &one, query, ID)
+	if err != nil {
 		return domain.CharityMrys{}, domain.ErrCharityMrysNotFound
-	default:
-		return domain.NewCharityMrys(
-			domain.CharityMrysID(id),
-			name,
-			domain.Money(amount),
-			month,
-			year,
-			description,
-			createdAt,
-		), err
 	}
+	return one, nil
 }
 
 func (a CharityMrysSQL) DeleteByID(ctx context.Context, ID domain.CharityMrysID) (bool, error) {

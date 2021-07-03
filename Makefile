@@ -19,7 +19,7 @@ init: ## Create environment variables
 
 .PHONY: test-local
 test-local: ## Run local golang tests
-	go test -cover -race ./...
+	go test -coverprofile=coverage.out -race ./...
 
 .PHONY: test
 test: ## Run golang tests

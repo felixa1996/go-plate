@@ -188,6 +188,42 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/v1/charity-mrys/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Find One Charity Mrys By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

@@ -21,3 +21,15 @@ func CharityMrysFindAll(db repository.SQL, log logger.Logger, ctxTimeout time.Du
 	)
 	return act
 }
+
+func CharityMrysFindOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration) action.FindCharityMrysAction {
+	var (
+		uc = usecase.NewFindCharityMrysInteractor(
+			repository.NewCharityMrysSQL(db),
+			presenter.NewFindCharityMrysPresenter(),
+			ctxTimeout,
+		)
+		act = action.NewFindCharityMrysAction(uc, log)
+	)
+	return act
+}
