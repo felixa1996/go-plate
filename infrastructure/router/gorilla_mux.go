@@ -115,8 +115,10 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildCreateAccountAction()).Methods(http.MethodPost)
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
+	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildFindCharityMrysAction()).Methods(http.MethodGet)
+	api.Handle("/charity-mrys/{id}", g.buildDeleteOneCharityMrysAction()).Methods(http.MethodDelete)
 
 	api.HandleFunc("/health", action.HealthCheck).Methods(http.MethodGet)
 }
@@ -214,6 +216,28 @@ func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 	)
 }
 
+// CreateCharityMrys godoc
+// @Summary Create Charity Mrys
+// @Description Create Charity Mrys
+// @Tags CharityMrys
+// @Accept  json
+// @Produce  json
+// @Param data body domain.CharityMrys true "Create charity mrys"
+// @Success 201 {object} domain.CharityMrys
+// @Router /v1/charity-mrys [post]
+func (g gorillaMux) buildCreateCharityMrysAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		var act = route.CharityMrysCreateOne(g.db, g.log, g.ctxTimeout, g.validator)
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
 // FindCharityMrys godoc
 // @Summary Find One Charity Mrys By ID
 // @Tags CharityMrys
@@ -226,6 +250,37 @@ func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 func (g gorillaMux) buildFindCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		var act = route.CharityMrysFindOne(g.db, g.log, g.ctxTimeout)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("id", vars["id"])
+		req.URL.RawQuery = q.Encode()
+
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// DeleteCharityMrys godoc
+// @Summary Delete One Charity Mrys By ID
+// @Tags CharityMrys
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {boolean} boolean "success"
+// @Param id path string true "Charity Mrys ID"
+// @Router /v1/charity-mrys/{id} [delete]
+func (g gorillaMux) buildDeleteOneCharityMrysAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		var act = route.CharityMrysDeleteOne(g.db, g.log, g.ctxTimeout)
 
 		var (
 			vars = mux.Vars(req)

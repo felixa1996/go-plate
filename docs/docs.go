@@ -187,6 +187,38 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create Charity Mrys",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Create Charity Mrys",
+                "parameters": [
+                    {
+                        "description": "Create charity mrys",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    }
+                }
             }
         },
         "/v1/charity-mrys/{id}": {
@@ -220,6 +252,40 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Delete One Charity Mrys By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Charity Mrys ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "boolean"
                         }
                     }
                 }

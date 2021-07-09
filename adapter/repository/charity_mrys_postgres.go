@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/felixa1996/go-plate/domain"
 	"github.com/pkg/errors"
@@ -19,31 +20,22 @@ func NewCharityMrysSQL(db SQL) CharityMrysSQL {
 }
 
 func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	var query = `
-		INSERT INTO 
-			charity_mrys (id, name, amount, year, month, description, created_at)
-		VALUES 
-			($1, $2, $3, $4, $5, $6, $7)
-	`
+	// var query = `
+	// 	INSERT INTO
+	// 		charity_mrys (id, name, amount, year, month, description, created_at)
+	// 	VALUES
+	// 		($1, $2, $3, $4, $5, $6, $7)
+	// `
 
-	if err := a.db.ExecuteContext(
-		ctx,
-		query,
-		CharityMrys.ID(),
-		CharityMrys.Name,
-		CharityMrys.Amount,
-		CharityMrys.Year,
-		CharityMrys.Month,
-		CharityMrys.Description,
-		CharityMrys.CreatedAt,
-	); err != nil {
+	if err := a.db.InsertPG(ctx, &CharityMrys, "name"); err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
+	fmt.Printf(CharityMrys.Id)
 
 	return CharityMrys, nil
 }
 
-func (a CharityMrysSQL) Update(ctx context.Context, ID domain.CharityMrysID, charityMrys domain.CharityMrys) (domain.CharityMrys, error) {
+func (a CharityMrysSQL) Update(ctx context.Context, ID string, charityMrys domain.CharityMrys) (domain.CharityMrys, error) {
 	tx, ok := ctx.Value("TransactionContextKey").(Tx)
 	if !ok {
 		var err error
@@ -75,7 +67,7 @@ func (a CharityMrysSQL) FindAll(ctx context.Context) ([]domain.CharityMrys, erro
 	return list, nil
 }
 
-func (a CharityMrysSQL) FindByID(ctx context.Context, ID domain.CharityMrysID) (domain.CharityMrys, error) {
+func (a CharityMrysSQL) FindByID(ctx context.Context, ID string) (domain.CharityMrys, error) {
 	tx, ok := ctx.Value("TransactionContextKey").(Tx)
 	if !ok {
 		var err error
@@ -96,13 +88,15 @@ func (a CharityMrysSQL) FindByID(ctx context.Context, ID domain.CharityMrysID) (
 	return one, nil
 }
 
-func (a CharityMrysSQL) DeleteByID(ctx context.Context, ID domain.CharityMrysID) (bool, error) {
+func (a CharityMrysSQL) DeleteByID(ctx context.Context, ID string) (bool, error) {
 
 	var (
-		query = "DELETE FROM charity_mrys WHERE id = $1"
+		query = "DELETE FROM charity_mrys WHERE id = ?"
 	)
 
-	err := a.db.ExecuteContext(ctx, query, ID)
+	var result domain.CharityMrys
+
+	err := a.db.ExecuteContextPG(ctx, &result, query, ID)
 	switch {
 	case err == sql.ErrNoRows:
 		return false, domain.ErrCharityMrysNotFound

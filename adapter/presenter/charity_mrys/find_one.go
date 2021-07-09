@@ -13,7 +13,7 @@ func NewFindCharityMrysPresenter() usecase.FindCharityMrysPresenter {
 
 func (a findCharityMrysPresenter) Output(model domain.CharityMrys) usecase.FindCharityMrysOutput {
 	return usecase.FindCharityMrysOutput{
-		Id:          model.Id.String(),
+		Id:          model.Id,
 		Name:        model.Name,
 		Amount:      model.Amount.Float64(),
 		Month:       model.Month,

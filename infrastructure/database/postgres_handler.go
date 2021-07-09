@@ -90,6 +90,24 @@ func (p postgresHandler) ExecuteContext(ctx context.Context, query string, args 
 	return nil
 }
 
+func (p postgresHandler) ExecuteContextPG(ctx context.Context, model interface{}, query string, args ...interface{}) error {
+	_, err := p.dbPG.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p postgresHandler) InsertPG(ctx context.Context, model interface{}, returning string) error {
+	_, err := p.dbPG.ModelContext(ctx, model).Insert()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (p postgresHandler) QueryContext(ctx context.Context, query string, args ...interface{}) (repository.Rows, error) {
 	rows, err := p.db.QueryContext(ctx, query, args...)
 	if err != nil {
@@ -179,6 +197,15 @@ func newPostgresTx(tx *sql.Tx, txPg *pg.Tx) postgresTx {
 
 func (p postgresTx) ExecuteContext(ctx context.Context, query string, args ...interface{}) error {
 	_, err := p.tx.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p postgresTx) ExecuteContextPG(ctx context.Context, model interface{}, query string, args ...interface{}) error {
+	_, err := p.txPg.ExecContext(ctx, query, args...)
 	if err != nil {
 		return err
 	}

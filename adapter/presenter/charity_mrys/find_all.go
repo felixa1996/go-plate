@@ -18,7 +18,7 @@ func (a findAllCharityMrysPresenter) Output(CharityMryss []domain.CharityMrys) [
 
 	for _, CharityMrys := range CharityMryss {
 		o = append(o, usecase.FindAllCharityMrysOutput{
-			ID:          CharityMrys.ID().String(),
+			ID:          CharityMrys.Id,
 			Name:        CharityMrys.Name,
 			Amount:      CharityMrys.Amount.Float64(),
 			Month:       CharityMrys.Month,

@@ -151,7 +151,49 @@ paths:
       summary: Find All CharityMrys
       tags:
       - CharityMrys
+    post:
+      consumes:
+      - application/json
+      description: Create Charity Mrys
+      parameters:
+      - description: Create charity mrys
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CharityMrys'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CharityMrys'
+      summary: Create Charity Mrys
+      tags:
+      - CharityMrys
   /v1/charity-mrys/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Charity Mrys ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: Delete One Charity Mrys By ID
+      tags:
+      - CharityMrys
     get:
       consumes:
       - application/json

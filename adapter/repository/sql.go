@@ -8,6 +8,8 @@ import (
 
 type SQL interface {
 	ExecuteContext(context.Context, string, ...interface{}) error
+	InsertPG(context.Context, interface{}, string) error
+	ExecuteContextPG(context.Context, interface{}, string, ...interface{}) error
 	QueryContext(context.Context, string, ...interface{}) (Rows, error)
 	QueryContextPG(context.Context, interface{}, string, ...interface{}) (pg.Result, error)
 	QueryRowContext(context.Context, string, ...interface{}) Row
@@ -28,6 +30,7 @@ type Row interface {
 
 type Tx interface {
 	ExecuteContext(context.Context, string, ...interface{}) error
+	ExecuteContextPG(context.Context, interface{}, string, ...interface{}) error
 	QueryContext(context.Context, string, ...interface{}) (Rows, error)
 	QueryRowContext(context.Context, string, ...interface{}) Row
 	QueryRowContextPG(context.Context, interface{}, string, ...interface{}) (pg.Result, error)

@@ -10,7 +10,7 @@ import (
 type (
 	// FindCharityMrysUseCase input port
 	FindCharityMrysUseCase interface {
-		Execute(context.Context, domain.CharityMrysID) (FindCharityMrysOutput, error)
+		Execute(context.Context, string) (FindCharityMrysOutput, error)
 	}
 
 	// FindCharityMrysInput input data
@@ -55,7 +55,7 @@ func NewFindCharityMrysInteractor(
 }
 
 // Execute orchestrates the use case
-func (a findCharityMrysInteractor) Execute(ctx context.Context, ID domain.CharityMrysID) (FindCharityMrysOutput, error) {
+func (a findCharityMrysInteractor) Execute(ctx context.Context, ID string) (FindCharityMrysOutput, error) {
 	ctx, cancel := context.WithTimeout(ctx, a.ctxTimeout)
 	defer cancel()
 
