@@ -116,6 +116,7 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
+	api.Handle("/charity-mrys/{id}", g.buildUpdateCharityMrysAction()).Methods(http.MethodPatch)
 	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildFindCharityMrysAction()).Methods(http.MethodGet)
@@ -229,6 +230,38 @@ func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 func (g gorillaMux) buildCreateCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		var act = route.CharityMrysCreateOne(g.db, g.log, g.ctxTimeout, g.validator)
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// UpdateCharityMrys godoc
+// @Summary Update Charity Mrys By ID
+// @Description Update Charity Mrys By ID
+// @Tags CharityMrys
+// @Accept  json
+// @Produce  json
+// @Param data body domain.CharityMrys true "Update charity mrys"
+// @Success 201 {object} domain.CharityMrys
+// @Param id path string true "ID"
+// @Router /v1/charity-mrys/{id} [patch]
+func (g gorillaMux) buildUpdateCharityMrysAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		var act = route.CharityMrysUpdateOne(g.db, g.log, g.ctxTimeout, g.validator)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("id", vars["id"])
+		req.URL.RawQuery = q.Encode()
+
 		act.Execute(res, req)
 	}
 

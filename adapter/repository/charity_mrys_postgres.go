@@ -36,28 +36,27 @@ func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMr
 	if err := a.db.InsertPG(ctx, &CharityMrys, "name"); err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
-	fmt.Printf(CharityMrys.Id)
 
 	return CharityMrys, nil
 }
 
-func (a CharityMrysSQL) Update(ctx context.Context, ID string, charityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	tx, ok := ctx.Value("TransactionContextKey").(Tx)
-	if !ok {
-		var err error
-		tx, err = a.db.BeginTx(ctx)
-		if err != nil {
-			return domain.CharityMrys{}, errors.Wrap(err, "error updating CharityMrys transaction")
-		}
+func (a CharityMrysSQL) Update(ctx context.Context, CharityMrys domain.CharityMrys, ID string) (domain.CharityMrys, error) {
+	/* There're 2 ways to perform update data using modelContext for simple one
+	 * If query is complex we're using getDBPG to get the handler and write down the query inside repostiory
+	 */
+	whereQuery := fmt.Sprintf("id = '%s'", ID)
+
+	// db := a.db.GetDBPG(ctx)
+	// _, err := db.Model(&CharityMrys).Where(whereQuery).Update()
+	// if err != nil {
+	// 	return domain.CharityMrys{}, errors.Wrap(err, "error updating CharityMrys")
+	// }
+
+	if err := a.db.UpdatePG(ctx, &CharityMrys, whereQuery); err != nil {
+		return domain.CharityMrys{}, errors.Wrap(err, "error updating CharityMrys")
 	}
 
-	query := "UPDATE charity_mrys SET name = $2, amount = $3, year = $4, month = $5, description = $6 WHERE id = $1"
-
-	if err := tx.ExecuteContext(ctx, query, charityMrys, ID); err != nil {
-		return charityMrys, errors.Wrap(err, "error updating CharityMrys query")
-	}
-
-	return charityMrys, nil
+	return CharityMrys, nil
 }
 
 func (a CharityMrysSQL) FindAll(ctx context.Context) ([]domain.CharityMrys, error) {

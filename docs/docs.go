@@ -326,6 +326,45 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "Update Charity Mrys By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Update Charity Mrys By ID",
+                "parameters": [
+                    {
+                        "description": "Update charity mrys",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrys"
+                        }
+                    }
+                }
             }
         }
     },

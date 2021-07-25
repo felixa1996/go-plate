@@ -24,7 +24,7 @@ type (
 	CharityMrysRepository interface {
 		CreateBulk(context.Context, []CharityMrys) ([]CharityMrys, error)
 		Create(context.Context, CharityMrys) (CharityMrys, error)
-		Update(context.Context, string, CharityMrys) (CharityMrys, error)
+		Update(context.Context, CharityMrys, string) (CharityMrys, error)
 		FindAll(context.Context) ([]CharityMrys, error)
 		FindByID(context.Context, string) (CharityMrys, error)
 		DeleteByID(context.Context, string) (bool, error)
