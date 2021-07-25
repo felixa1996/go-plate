@@ -10,23 +10,16 @@ import (
 type (
 	// FindAllCharityMrysUseCase input port
 	FindAllCharityMrysUseCase interface {
-		Execute(context.Context) ([]FindAllCharityMrysOutput, error)
+		Execute(context.Context) (FindAllCharityMrysOutput, error)
 	}
 
 	// FindAllCharityMrysPresenter output port
 	FindAllCharityMrysPresenter interface {
-		Output([]domain.CharityMrys) []FindAllCharityMrysOutput
+		Output(domain.CharityMrysAll) FindAllCharityMrysOutput
 	}
 
-	// FindAllCharityMrysOutput outputData
 	FindAllCharityMrysOutput struct {
-		ID          string  `json:"id"`
-		Name        string  `json:"name"`
-		Amount      float64 `json:"amount"`
-		Month       int32   `json:"month"`
-		Year        int32   `json:"year"`
-		Description string  `json:"description"`
-		CreatedAt   string  `json:"created_at"`
+		Data []FindAllCharityMrysData `json:"data"`
 	}
 
 	findAllCharityMrysInteractor struct {
@@ -50,14 +43,24 @@ func NewFindAllCharityMrysInteractor(
 }
 
 // Execute orchestrates the use case
-func (a findAllCharityMrysInteractor) Execute(ctx context.Context) ([]FindAllCharityMrysOutput, error) {
+func (a findAllCharityMrysInteractor) Execute(ctx context.Context) (FindAllCharityMrysOutput, error) {
 	ctx, cancel := context.WithTimeout(ctx, a.ctxTimeout)
 	defer cancel()
 
-	CharityMryss, err := a.repo.FindAll(ctx)
+	result, err := a.repo.FindAll(ctx)
 	if err != nil {
-		return a.presenter.Output([]domain.CharityMrys{}), err
+		return a.presenter.Output(domain.CharityMrysAll{}), err
 	}
 
-	return a.presenter.Output(CharityMryss), nil
+	return a.presenter.Output(result), nil
+}
+
+type FindAllCharityMrysData struct {
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Amount      float64 `json:"amount"`
+	Month       int32   `json:"month"`
+	Year        int32   `json:"year"`
+	Description string  `json:"description"`
+	CreatedAt   string  `json:"created_at"`
 }

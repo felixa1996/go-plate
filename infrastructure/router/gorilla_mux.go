@@ -116,12 +116,12 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
-	api.Handle("/charity-mrys/{id}", g.buildUpdateCharityMrysAction()).Methods(http.MethodPatch)
 	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
+	api.Handle("/charity-mrys/{id}", g.buildUpdateCharityMrysAction()).Methods(http.MethodPatch)
+	api.Handle("/charity-mrys/list-all", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}", g.buildFindPaginationCharityMrysAction()).
 		Queries("search", "{search}").
 		Methods(http.MethodGet)
-	api.Handle("/charity-mrys/list-all", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildFindCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildDeleteOneCharityMrysAction()).Methods(http.MethodDelete)
 
@@ -206,11 +206,11 @@ func (g gorillaMux) buildFindAllAccountAction() *negroni.Negroni {
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} []domain.CharityMrys
+// @Success 200 {object} domain.CharityMrysAll
 // @Router /v1/charity-mrys/list-all [get]
 func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.CharityMrysFindPagination(g.db, g.log, g.ctxTimeout)
+		var act = route.CharityMrysFindAll(g.db, g.log, g.ctxTimeout)
 		act.Execute(res, req)
 	}
 

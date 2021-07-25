@@ -24,6 +24,9 @@ type CharityMrysPagination struct {
 	Data []CharityMrys  `json:"data"`
 	Meta MetaPagination `json:"meta"`
 }
+type CharityMrysAll struct {
+	Data []CharityMrys `json:"data"`
+}
 
 type (
 	CharityMrysRepository interface {
@@ -31,7 +34,7 @@ type (
 		Create(context.Context, CharityMrys) (CharityMrys, error)
 		Update(context.Context, CharityMrys, string) (CharityMrys, error)
 		FindPagination(context.Context, int, int, string, string) (CharityMrysPagination, error)
-		FindAll(context.Context) ([]CharityMrys, error)
+		FindAll(context.Context) (CharityMrysAll, error)
 		FindByID(context.Context, string) (CharityMrys, error)
 		DeleteByID(context.Context, string) (bool, error)
 	}

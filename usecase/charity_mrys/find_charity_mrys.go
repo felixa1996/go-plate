@@ -22,8 +22,6 @@ type (
 	FindCharityMrysPresenter interface {
 		Output(domain.CharityMrys) FindCharityMrysOutput
 	}
-
-	// FindCharityMrysOutput output data
 	FindCharityMrysOutput struct {
 		Id          string    `json:"id"`
 		Name        string    `json:"name"`

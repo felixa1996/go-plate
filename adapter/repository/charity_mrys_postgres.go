@@ -97,17 +97,19 @@ func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, per
 	}, nil
 }
 
-func (a CharityMrysSQL) FindAll(ctx context.Context) ([]domain.CharityMrys, error) {
+func (a CharityMrysSQL) FindAll(ctx context.Context) (domain.CharityMrysAll, error) {
 	var query = "SELECT * FROM charity_mrys"
 
 	var list []domain.CharityMrys
 
 	_, err := a.db.QueryContextPG(ctx, &list, query)
 	if err != nil {
-		return []domain.CharityMrys{}, errors.Wrap(err, "error listing CharityMryss")
+		return domain.CharityMrysAll{}, errors.Wrap(err, "error listing CharityMryss")
 	}
 
-	return list, nil
+	return domain.CharityMrysAll{
+		Data: list,
+	}, nil
 }
 
 func (a CharityMrysSQL) FindByID(ctx context.Context, ID string) (domain.CharityMrys, error) {
