@@ -118,7 +118,9 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys/{id}", g.buildUpdateCharityMrysAction()).Methods(http.MethodPatch)
 	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
-	api.Handle("/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search}", g.buildFindPaginationCharityMrysAction()).Methods(http.MethodGet)
+	api.Handle("/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}", g.buildFindPaginationCharityMrysAction()).
+		Queries("search", "{search}").
+		Methods(http.MethodGet)
 	api.Handle("/charity-mrys/list-all", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildFindCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildDeleteOneCharityMrysAction()).Methods(http.MethodDelete)
@@ -229,8 +231,8 @@ func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 // @Param currentPage path int true "CurrentPage"
 // @Param perPage path int true "PerPage"
 // @Param sort path string true "Sort"
-// @Param search path string false "Search"
-// @Router /v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search} [get]
+// @Param search query string false "Search"
+// @Router /v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort} [get]
 func (g gorillaMux) buildFindPaginationCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		var act = route.CharityMrysFindPagination(g.db, g.log, g.ctxTimeout)

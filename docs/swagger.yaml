@@ -55,8 +55,12 @@ definitions:
     properties:
       currentPage:
         type: integer
+      offset:
+        type: integer
       perPage:
         type: integer
+      sort:
+        type: string
       total:
         type: integer
       totalPage:
@@ -318,7 +322,7 @@ paths:
       summary: Find All CharityMrys
       tags:
       - CharityMrys
-  /v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search}:
+  /v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}:
     get:
       consumes:
       - application/json
@@ -339,7 +343,7 @@ paths:
         required: true
         type: string
       - description: Search
-        in: path
+        in: query
         name: search
         type: string
       produces:

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/felixa1996/go-plate/domain"
+	utils "github.com/felixa1996/go-plate/infrastructure/utils"
 	"github.com/pkg/errors"
 )
 
@@ -61,23 +62,31 @@ func (a CharityMrysSQL) Update(ctx context.Context, CharityMrys domain.CharityMr
 }
 
 func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, perPage int, sort string, search string) (domain.CharityMrysPagination, error) {
-	meta := domain.MetaPagination{
-		PerPage:     perPage,
-		CurrentPage: currentPage,
-		TotalPage:   0,
-		Total:       0,
+	db := a.db.GetDBPG(ctx)
+	total, err := db.Model(&domain.CharityMrys{}).Count()
+	if err != nil {
+		return domain.CharityMrysPagination{}, errors.Wrap(err, "error get total CharityMryss")
 	}
 
-	db := a.db.GetDBPG(ctx)
+	pagination := utils.Pagination{
+		PerPage:     perPage,
+		CurrentPage: currentPage,
+		Total:       total,
+		Sort:        sort,
+		// SortList: map[string]string{
+		// 	"name2": "name",
+		// },
+	}
+	meta := pagination.ToMeta()
 
-	q := db.Model(&domain.CharityMrys{}).Limit(perPage).Offset(0)
+	q := db.Model(&domain.CharityMrys{}).Limit(perPage).Order(meta.Sort).Offset(meta.Offset)
 	if len(search) > 0 {
 		q.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(search)+"%")
 	}
 
 	var list []domain.CharityMrys
 
-	err := q.Select(&list)
+	err = q.Select(&list)
 	if err != nil {
 		return domain.CharityMrysPagination{}, errors.Wrap(err, "error listing pagination CharityMryss")
 	}

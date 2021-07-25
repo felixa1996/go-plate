@@ -263,7 +263,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search}": {
+        "/v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}": {
             "get": {
                 "security": [
                     {
@@ -306,7 +306,7 @@ var doc = `{
                         "type": "string",
                         "description": "Search",
                         "name": "search",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -508,8 +508,14 @@ var doc = `{
                 "currentPage": {
                     "type": "integer"
                 },
+                "offset": {
+                    "type": "integer"
+                },
                 "perPage": {
                     "type": "integer"
+                },
+                "sort": {
+                    "type": "string"
                 },
                 "total": {
                     "type": "integer"
