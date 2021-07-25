@@ -20,11 +20,17 @@ type CharityMrys struct {
 	CreatedAt   time.Time `json:"CreatedAt" example:"2019-11-09T21:21:46+00:00"`
 }
 
+type CharityMrysPagination struct {
+	Data []CharityMrys  `json:"data"`
+	Meta MetaPagination `json:"meta"`
+}
+
 type (
 	CharityMrysRepository interface {
 		CreateBulk(context.Context, []CharityMrys) ([]CharityMrys, error)
 		Create(context.Context, CharityMrys) (CharityMrys, error)
 		Update(context.Context, CharityMrys, string) (CharityMrys, error)
+		FindPagination(context.Context, int, int, string, string) (CharityMrysPagination, error)
 		FindAll(context.Context) ([]CharityMrys, error)
 		FindByID(context.Context, string) (CharityMrys, error)
 		DeleteByID(context.Context, string) (bool, error)

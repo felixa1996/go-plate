@@ -23,6 +23,18 @@ func CharityMrysFindAll(db repository.SQL, log logger.Logger, ctxTimeout time.Du
 	return act
 }
 
+func CharityMrysFindPagination(db repository.SQL, log logger.Logger, ctxTimeout time.Duration) action.FindPaginationCharityMrysAction {
+	var (
+		uc = usecase.NewFindPaginationCharityMrysInteractor(
+			repository.NewCharityMrysSQL(db),
+			presenter.NewFindPaginationCharityMrysPresenter(),
+			ctxTimeout,
+		)
+		act = action.NewFindPaginationCharityMrysAction(uc, log)
+	)
+	return act
+}
+
 func CharityMrysFindOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration) action.FindCharityMrysAction {
 	var (
 		uc = usecase.NewFindCharityMrysInteractor(

@@ -118,7 +118,8 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys/{id}", g.buildUpdateCharityMrysAction()).Methods(http.MethodPatch)
 	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
-	api.Handle("/charity-mrys", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
+	api.Handle("/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search}", g.buildFindPaginationCharityMrysAction()).Methods(http.MethodGet)
+	api.Handle("/charity-mrys/list-all", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildFindCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildDeleteOneCharityMrysAction()).Methods(http.MethodDelete)
 
@@ -203,11 +204,48 @@ func (g gorillaMux) buildFindAllAccountAction() *negroni.Negroni {
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} domain.CharityMrys
-// @Router /v1/charity-mrys [get]
+// @Success 200 {object} []domain.CharityMrys
+// @Router /v1/charity-mrys/list-all [get]
 func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.CharityMrysFindAll(g.db, g.log, g.ctxTimeout)
+		var act = route.CharityMrysFindPagination(g.db, g.log, g.ctxTimeout)
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// FindPaginationCharityMrys godoc
+// @Summary Find Pagination CharityMrys
+// @Tags CharityMrys
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} domain.CharityMrysPagination
+// @Param currentPage path int true "CurrentPage"
+// @Param perPage path int true "PerPage"
+// @Param sort path string true "Sort"
+// @Param search path string false "Search"
+// @Router /v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search} [get]
+func (g gorillaMux) buildFindPaginationCharityMrysAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		var act = route.CharityMrysFindPagination(g.db, g.log, g.ctxTimeout)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("currentPage", vars["currentPage"])
+		q.Add("perPage", vars["perPage"])
+		q.Add("sort", vars["sort"])
+		q.Add("search", vars["search"])
+		req.URL.RawQuery = q.Encode()
+
 		act.Execute(res, req)
 	}
 

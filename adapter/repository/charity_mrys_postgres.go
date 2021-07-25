@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/felixa1996/go-plate/domain"
 	"github.com/pkg/errors"
@@ -57,6 +58,34 @@ func (a CharityMrysSQL) Update(ctx context.Context, CharityMrys domain.CharityMr
 	}
 
 	return CharityMrys, nil
+}
+
+func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, perPage int, sort string, search string) (domain.CharityMrysPagination, error) {
+	meta := domain.MetaPagination{
+		PerPage:     perPage,
+		CurrentPage: currentPage,
+		TotalPage:   0,
+		Total:       0,
+	}
+
+	db := a.db.GetDBPG(ctx)
+
+	q := db.Model(&domain.CharityMrys{}).Limit(perPage).Offset(0)
+	if len(search) > 0 {
+		q.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(search)+"%")
+	}
+
+	var list []domain.CharityMrys
+
+	err := q.Select(&list)
+	if err != nil {
+		return domain.CharityMrysPagination{}, errors.Wrap(err, "error listing pagination CharityMryss")
+	}
+
+	return domain.CharityMrysPagination{
+		Data: list,
+		Meta: meta,
+	}, nil
 }
 
 func (a CharityMrysSQL) FindAll(ctx context.Context) ([]domain.CharityMrys, error) {

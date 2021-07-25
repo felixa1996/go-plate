@@ -61,14 +61,3 @@ func (a findAllCharityMrysInteractor) Execute(ctx context.Context) ([]FindAllCha
 
 	return a.presenter.Output(CharityMryss), nil
 }
-
-// List of CharityMryss Response
-type FindAllCharityMrysOutputResponse struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	Account     float64 `json:"account"`
-	Month       float64 `json:"month"`
-	Year        float64 `json:"year"`
-	Description float64 `json:"description"`
-	CreatedAt   string  `json:"created_at"`
-}

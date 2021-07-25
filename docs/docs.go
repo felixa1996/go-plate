@@ -163,31 +163,6 @@ var doc = `{
             }
         },
         "/v1/charity-mrys": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "CharityMrys"
-                ],
-                "summary": "Find All CharityMrys",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.CharityMrys"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "Create Charity Mrys",
                 "consumes": [
@@ -253,6 +228,92 @@ var doc = `{
                             "items": {
                                 "$ref": "#/definitions/domain.CharityMrys"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/charity-mrys/list-all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Find All CharityMrys",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.CharityMrys"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/charity-mrys/list-pagination/{currentPage}/{perPage}/{sort}/{search}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Find Pagination CharityMrys",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CurrentPage",
+                        "name": "currentPage",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "PerPage",
+                        "name": "perPage",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CharityMrysPagination"
                         }
                     }
                 }
@@ -424,6 +485,37 @@ var doc = `{
                 "name": {
                     "type": "string",
                     "example": "Leo Messi"
+                }
+            }
+        },
+        "domain.CharityMrysPagination": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.CharityMrys"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/domain.MetaPagination"
+                }
+            }
+        },
+        "domain.MetaPagination": {
+            "type": "object",
+            "properties": {
+                "currentPage": {
+                    "type": "integer"
+                },
+                "perPage": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "totalPage": {
+                    "type": "integer"
                 }
             }
         },
