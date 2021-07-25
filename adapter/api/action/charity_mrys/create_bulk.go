@@ -11,24 +11,24 @@ import (
 	usecase "github.com/felixa1996/go-plate/usecase/charity_mrys"
 )
 
-type CreateCharityMrysAction struct {
-	uc        usecase.CreateCharityMrysUseCase
+type CreateBulkCharityMrysAction struct {
+	uc        usecase.CreateBulkCharityMrysUseCase
 	log       logger.Logger
 	validator validator.Validator
 }
 
-func NewCreateCharityMrysAction(uc usecase.CreateCharityMrysUseCase, log logger.Logger, v validator.Validator) CreateCharityMrysAction {
-	return CreateCharityMrysAction{
+func NewCreateBulkCharityMrysAction(uc usecase.CreateBulkCharityMrysUseCase, log logger.Logger, v validator.Validator) CreateBulkCharityMrysAction {
+	return CreateBulkCharityMrysAction{
 		uc:        uc,
 		log:       log,
 		validator: v,
 	}
 }
 
-func (a CreateCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request) {
-	const logKey = "create_charity_mrys"
+func (a CreateBulkCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request) {
+	const logKey = "create_bulk_charity_mrys"
 
-	var input usecase.CreateCharityMrysInput
+	var input usecase.CreateBulkCharityMrysInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		logging.NewError(
 			a.log,
@@ -66,12 +66,12 @@ func (a CreateCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request)
 		response.NewError(err, http.StatusInternalServerError).Send(w)
 		return
 	}
-	logging.NewInfo(a.log, logKey, http.StatusCreated).Log("success creating charity_mrys")
+	logging.NewInfo(a.log, logKey, http.StatusCreated).Log("success creating bulk charity_mrys")
 
 	response.NewSuccess(output, http.StatusCreated).Send(w)
 }
 
-func (a CreateCharityMrysAction) validateInput(input usecase.CreateCharityMrysInput) []string {
+func (a CreateBulkCharityMrysAction) validateInput(input usecase.CreateBulkCharityMrysInput) []string {
 	var msgs []string
 
 	err := a.validator.Validate(input)

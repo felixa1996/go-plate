@@ -42,6 +42,36 @@ definitions:
         example: Leo Messi
         type: string
     type: object
+  usecase.CreateBulkCharityMrysInput:
+    properties:
+      amount:
+        example: 40000
+        type: integer
+      description:
+        example: description
+        type: string
+      id:
+        example: "1"
+        type: string
+      month_from:
+        example: 2
+        type: integer
+      month_to:
+        example: 10
+        type: integer
+      name:
+        example: Leo Messi
+        type: string
+      year:
+        example: 2021
+        type: integer
+    required:
+    - amount
+    - month_from
+    - month_to
+    - name
+    - year
+    type: object
 host: localhost:8000/vhry/data/
 info:
   contact:
@@ -213,6 +243,30 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Find One Charity Mrys By ID
+      tags:
+      - CharityMrys
+  /v1/charity-mrys/create-bulk:
+    post:
+      consumes:
+      - application/json
+      description: Create Bulk Charity Mrys
+      parameters:
+      - description: Create charity mrys
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.CreateBulkCharityMrysInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/domain.CharityMrys'
+            type: array
+      summary: Create Bulk Charity Mrys
       tags:
       - CharityMrys
 securityDefinitions:

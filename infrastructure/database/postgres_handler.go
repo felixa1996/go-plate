@@ -108,6 +108,15 @@ func (p postgresHandler) InsertPG(ctx context.Context, model interface{}, return
 	return nil
 }
 
+func (p postgresHandler) UpdatePG(ctx context.Context, model interface{}, where string) error {
+	_, err := p.dbPG.ModelContext(ctx, model).Update()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (p postgresHandler) QueryContext(ctx context.Context, query string, args ...interface{}) (repository.Rows, error) {
 	rows, err := p.db.QueryContext(ctx, query, args...)
 	if err != nil {

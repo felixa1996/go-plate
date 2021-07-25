@@ -58,3 +58,15 @@ func CharityMrysCreateOne(db repository.SQL, log logger.Logger, ctxTimeout time.
 	)
 	return act
 }
+
+func CharityMrysCreateBulk(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator) action.CreateBulkCharityMrysAction {
+	var (
+		uc = usecase.NewCreateBulkCharityMrysInteractor(
+			repository.NewCharityMrysSQL(db),
+			presenter.NewCreateBulkCharityMrysPresenter(),
+			ctxTimeout,
+		)
+		act = action.NewCreateBulkCharityMrysAction(uc, log, validator)
+	)
+	return act
+}

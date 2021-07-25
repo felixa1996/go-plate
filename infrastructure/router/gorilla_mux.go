@@ -116,6 +116,7 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
+	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys", g.buildFindAllCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildFindCharityMrysAction()).Methods(http.MethodGet)
 	api.Handle("/charity-mrys/{id}", g.buildDeleteOneCharityMrysAction()).Methods(http.MethodDelete)
@@ -228,6 +229,28 @@ func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 func (g gorillaMux) buildCreateCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		var act = route.CharityMrysCreateOne(g.db, g.log, g.ctxTimeout, g.validator)
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// CreateBulkCharityMrys godoc
+// @Summary Create Bulk Charity Mrys
+// @Description Create Bulk Charity Mrys
+// @Tags CharityMrys
+// @Accept json
+// @Produce  json
+// @Param data body usecase.CreateBulkCharityMrysInput true "Create charity mrys"
+// @Success 201 {object} []domain.CharityMrys
+// @Router /v1/charity-mrys/create-bulk [post]
+func (g gorillaMux) buildCreateBulkCharityMrysAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		var act = route.CharityMrysCreateBulk(g.db, g.log, g.ctxTimeout, g.validator)
 		act.Execute(res, req)
 	}
 

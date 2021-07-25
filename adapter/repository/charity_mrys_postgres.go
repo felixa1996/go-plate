@@ -19,14 +19,20 @@ func NewCharityMrysSQL(db SQL) CharityMrysSQL {
 	}
 }
 
-func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	// var query = `
-	// 	INSERT INTO
-	// 		charity_mrys (id, name, amount, year, month, description, created_at)
-	// 	VALUES
-	// 		($1, $2, $3, $4, $5, $6, $7)
-	// `
+func (a CharityMrysSQL) CreateBulk(ctx context.Context, CharityMrys []domain.CharityMrys) ([]domain.CharityMrys, error) {
+	data := []domain.CharityMrys{}
+	for _, model := range CharityMrys {
+		if err := a.db.InsertPG(ctx, &model, "name"); err != nil {
+			return []domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
+		}
+		data = append(data, model)
+		fmt.Printf(model.Id)
+	}
 
+	return data, nil
+}
+
+func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
 	if err := a.db.InsertPG(ctx, &CharityMrys, "name"); err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}

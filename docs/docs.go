@@ -221,6 +221,43 @@ var doc = `{
                 }
             }
         },
+        "/v1/charity-mrys/create-bulk": {
+            "post": {
+                "description": "Create Bulk Charity Mrys",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CharityMrys"
+                ],
+                "summary": "Create Bulk Charity Mrys",
+                "parameters": [
+                    {
+                        "description": "Create charity mrys",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.CreateBulkCharityMrysInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.CharityMrys"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/charity-mrys/{id}": {
             "get": {
                 "security": [
@@ -348,6 +385,46 @@ var doc = `{
                 "name": {
                     "type": "string",
                     "example": "Leo Messi"
+                }
+            }
+        },
+        "usecase.CreateBulkCharityMrysInput": {
+            "type": "object",
+            "required": [
+                "amount",
+                "month_from",
+                "month_to",
+                "name",
+                "year"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 40000
+                },
+                "description": {
+                    "type": "string",
+                    "example": "description"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "month_from": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "month_to": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Leo Messi"
+                },
+                "year": {
+                    "type": "integer",
+                    "example": 2021
                 }
             }
         }
