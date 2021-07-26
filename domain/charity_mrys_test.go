@@ -1,12 +1,7 @@
 package domain
 
 import (
-	"errors"
 	"testing"
-)
-
-var (
-	ErrCharityMrysNotFound = errors.New("charity mrys not found")
 )
 
 func TestCharityMrys(t *testing.T) {
