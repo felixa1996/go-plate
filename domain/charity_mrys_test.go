@@ -2,6 +2,8 @@ package domain
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCharityMrys(t *testing.T) {
@@ -32,16 +34,12 @@ func TestCharityMrys(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
 			tt.charityMrys.Name = tt.args.Name
 
-			if tt.charityMrys != tt.expected {
-				t.Errorf("[TestCase '%s'] Result: '%v' | Expected: '%v'",
-					tt.name,
-					tt.charityMrys,
-					tt.expected,
-				)
-			}
+			assert.True(t, tt.charityMrys == tt.expected, "[TestCase '%s'] Result: '%v' | Expected: '%v'",
+				tt.name,
+				tt.charityMrys,
+				tt.expected)
 		})
 	}
 
