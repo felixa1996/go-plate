@@ -146,7 +146,6 @@ func (a CharityMrysSQL) DeleteByID(ctx context.Context, ID string) (bool, error)
 	case err == sql.ErrNoRows:
 		return false, domain.ErrCharityMrysNotFound
 	default:
-		//todo check
 		return domain.DeleteCharityMrys(true), err
 	}
 }

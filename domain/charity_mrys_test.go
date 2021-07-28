@@ -9,10 +9,6 @@ import (
 func TestCharityMrys(t *testing.T) {
 	t.Parallel()
 
-	// type args struct {
-	// 	name string
-	// }
-
 	tests := []struct {
 		name        string
 		charityMrys CharityMrys
