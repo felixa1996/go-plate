@@ -22,20 +22,14 @@ func NewCharityMrysSQL(db SQL) CharityMrysSQL {
 }
 
 func (a CharityMrysSQL) CreateBulk(ctx context.Context, CharityMrys []domain.CharityMrys) ([]domain.CharityMrys, error) {
-	data := []domain.CharityMrys{}
-	for _, model := range CharityMrys {
-		if err := a.db.InsertPG(ctx, &model, "name"); err != nil {
-			return []domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
-		}
-		data = append(data, model)
-		fmt.Printf(model.Id)
+	if err := a.db.InsertPG(ctx, "name", &CharityMrys); err != nil {
+		return []domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
-
-	return data, nil
+	return CharityMrys, nil
 }
 
 func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	if err := a.db.InsertPG(ctx, &CharityMrys, "name"); err != nil {
+	if err := a.db.InsertPG(ctx, "name", &CharityMrys); err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
 

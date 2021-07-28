@@ -40,6 +40,18 @@ type (
 	}
 )
 
+func NewCharityMrys(ID string, Name string, Amount Money, Month int32, Year int32, Description string, createdAt time.Time) CharityMrys {
+	return CharityMrys{
+		Id:          ID,
+		Name:        Name,
+		Amount:      Amount,
+		Month:       Month,
+		Year:        Year,
+		Description: Description,
+		CreatedAt:   createdAt,
+	}
+}
+
 func DeleteCharityMrys(success bool) bool {
 	return success
 }

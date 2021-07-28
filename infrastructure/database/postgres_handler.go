@@ -99,7 +99,7 @@ func (p postgresHandler) ExecuteContextPG(ctx context.Context, model interface{}
 	return nil
 }
 
-func (p postgresHandler) InsertPG(ctx context.Context, model interface{}, returning string) error {
+func (p postgresHandler) InsertPG(ctx context.Context, returning string, model ...interface{}) error {
 	_, err := p.dbPG.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err

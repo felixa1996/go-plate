@@ -10,7 +10,7 @@ import (
 
 type SQL interface {
 	ExecuteContext(context.Context, string, ...interface{}) error
-	InsertPG(context.Context, interface{}, string) error
+	InsertPG(context.Context, string, ...interface{}) error
 	UpdatePG(context.Context, interface{}, string) error
 	ExecuteContextPG(context.Context, interface{}, string, ...interface{}) error
 	GetDBPG(context.Context) *pg.DB
