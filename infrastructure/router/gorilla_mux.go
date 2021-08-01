@@ -9,9 +9,14 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/felixa1996/go-plate/domain"
 	"github.com/felixa1996/go-plate/infrastructure/route"
+	"github.com/felixa1996/go-plate/infrastructure/utils"
 
 	httpSwagger "github.com/swaggo/http-swagger"
+
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	"github.com/form3tech-oss/jwt-go"
 
 	"github.com/felixa1996/go-plate/adapter/api/action"
 	"github.com/felixa1996/go-plate/adapter/api/middleware"
@@ -25,7 +30,6 @@ import (
 	"github.com/urfave/negroni"
 
 	_ "github.com/felixa1996/go-plate/docs"
-	//openApiMiddleware "github.com/go-openapi/runtime/middleware"
 )
 
 type gorillaMux struct {
@@ -36,6 +40,8 @@ type gorillaMux struct {
 	validator  validator.Validator
 	port       Port
 	ctxTimeout time.Duration
+	felJwt     utils.FelJwt
+	auth       domain.UserJwt
 }
 
 func newGorillaMux(
@@ -45,6 +51,13 @@ func newGorillaMux(
 	port Port,
 	t time.Duration,
 ) *gorillaMux {
+	jwtMid := jwtmiddleware.New(jwtmiddleware.Options{
+		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
+		},
+		SigningMethod: jwt.SigningMethodHS256,
+	})
+
 	return &gorillaMux{
 		router:     mux.NewRouter(),
 		middleware: negroni.New(),
@@ -53,6 +66,9 @@ func newGorillaMux(
 		validator:  validator,
 		port:       port,
 		ctxTimeout: t,
+		felJwt: utils.FelJwt{
+			JwtMiddleware: jwtMid,
+		},
 	}
 }
 
@@ -106,6 +122,7 @@ func (g gorillaMux) Listen() {
 }
 
 func (g gorillaMux) setAppHandlers(router *mux.Router) {
+
 	api := router.PathPrefix("/v1").Subrouter()
 
 	api.Handle("/transfers", g.buildFindAllTransferAction()).Methods(http.MethodGet)
@@ -210,12 +227,14 @@ func (g gorillaMux) buildFindAllAccountAction() *negroni.Negroni {
 // @Router /v1/charity-mrys/list-all [get]
 func (g gorillaMux) buildFindAllCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.CharityMrysFindAll(g.db, g.log, g.ctxTimeout)
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.CharityMrysFindAll(g.db, g.log, g.ctxTimeout, auth)
 		act.Execute(res, req)
 	}
 
 	return negroni.New(
 		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.HandlerFunc(g.felJwt.JwtMiddleware.HandlerWithNext),
 		negroni.NewRecovery(),
 		negroni.Wrap(handler),
 	)

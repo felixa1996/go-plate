@@ -25,6 +25,7 @@ type (
 	findAllCharityMrysInteractor struct {
 		repo       domain.CharityMrysRepository
 		presenter  FindAllCharityMrysPresenter
+		auth       *domain.UserJwt
 		ctxTimeout time.Duration
 	}
 )
@@ -33,11 +34,13 @@ type (
 func NewFindAllCharityMrysInteractor(
 	repo domain.CharityMrysRepository,
 	presenter FindAllCharityMrysPresenter,
+	auth *domain.UserJwt,
 	t time.Duration,
 ) FindAllCharityMrysUseCase {
 	return findAllCharityMrysInteractor{
 		repo:       repo,
 		presenter:  presenter,
+		auth:       auth,
 		ctxTimeout: t,
 	}
 }
@@ -47,7 +50,7 @@ func (a findAllCharityMrysInteractor) Execute(ctx context.Context) (FindAllChari
 	ctx, cancel := context.WithTimeout(ctx, a.ctxTimeout)
 	defer cancel()
 
-	result, err := a.repo.FindAll(ctx)
+	result, err := a.repo.FindAll(ctx, a.auth)
 	if err != nil {
 		return a.presenter.Output(domain.CharityMrysAll{}), err
 	}
