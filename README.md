@@ -4,6 +4,9 @@ Running with Kong API Gateway + PostgreSQL
 
 Microservice Golang + NodeJS
 
+**Switching ORM On Fly**
+Currently support raw db,go-pg,gorm
+
 **Swagger**
 http://localhost:8000/vhry/data/swagger/index.html
 
