@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-pg/pg/v10"
+	"gorm.io/gorm"
 
 	_ "github.com/lib/pq"
 )
@@ -14,6 +15,7 @@ type SQL interface {
 	UpdatePG(context.Context, interface{}, string) error
 	ExecuteContextPG(context.Context, interface{}, string, ...interface{}) error
 	GetDBPG(context.Context) *pg.DB
+	GetDBGorm(context.Context) *gorm.DB
 	QueryContext(context.Context, string, ...interface{}) (Rows, error)
 	QueryContextPG(context.Context, interface{}, string, ...interface{}) (pg.Result, error)
 	QueryRowContext(context.Context, string, ...interface{}) Row

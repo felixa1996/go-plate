@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -21,12 +21,12 @@ func (j *FelJwt) GetJWTUser(tokenString string) *domain.UserJwt {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
 
 	claims, ok := token.Claims.(*domain.UserJwt)
 	if !ok && !token.Valid {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
 	return claims
 }

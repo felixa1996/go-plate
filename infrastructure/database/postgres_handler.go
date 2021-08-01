@@ -10,12 +10,16 @@ import (
 	"github.com/go-pg/pg/extra/pgdebug"
 	"github.com/go-pg/pg/v10"
 
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
 	_ "github.com/lib/pq"
 )
 
 type postgresHandler struct {
-	db   *sql.DB
-	dbPG *pg.DB
+	db     *sql.DB
+	dbPG   *pg.DB
+	dbGorm *gorm.DB
 }
 
 func NewPostgresHandler(c *config) (*postgresHandler, error) {
@@ -64,7 +68,24 @@ func NewPostgresHandler(c *config) (*postgresHandler, error) {
 		Verbose: true,
 	})
 
-	return &postgresHandler{db: db, dbPG: dbPG}, nil
+	var dsGorm = fmt.Sprintf(
+		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
+		c.host,
+		c.port,
+		c.user,
+		c.database,
+		c.password,
+	)
+
+	dbGorm, err := gorm.Open(postgres.Open(dsGorm), &gorm.Config{
+		PrepareStmt:            true,
+		SkipDefaultTransaction: true,
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return &postgresHandler{db: db, dbPG: dbPG, dbGorm: dbGorm}, nil
 }
 
 func (p postgresHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
@@ -119,6 +140,10 @@ func (p postgresHandler) UpdatePG(ctx context.Context, model interface{}, where 
 
 func (p postgresHandler) GetDBPG(ctx context.Context) *pg.DB {
 	return p.dbPG
+}
+
+func (p postgresHandler) GetDBGorm(ctx context.Context) *gorm.DB {
+	return p.dbGorm
 }
 
 func (p postgresHandler) QueryContext(ctx context.Context, query string, args ...interface{}) (repository.Rows, error) {

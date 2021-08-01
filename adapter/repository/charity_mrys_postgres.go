@@ -29,7 +29,7 @@ func (a CharityMrysSQL) CreateBulk(ctx context.Context, CharityMrys []domain.Cha
 }
 
 func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	if err := a.db.InsertPG(ctx, "name", &CharityMrys); err != nil {
+	if err := a.db.GetDBGorm(ctx).Create(&CharityMrys).Error; err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
 

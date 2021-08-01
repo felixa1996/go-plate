@@ -11,7 +11,7 @@ var (
 )
 
 type CharityMrys struct {
-	Id          string    `json:"id" example:"1"`
+	Id          string    `gorm:"primaryKey" json:"id" example:"1"`
 	Name        string    `json:"name" example:"Leo Messi"`
 	Amount      Money     `json:"Amount" example:"40000"`
 	Month       int32     `json:"Month" example:"1"`
