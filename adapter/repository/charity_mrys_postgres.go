@@ -29,7 +29,7 @@ func (a CharityMrysSQL) CreateBulk(ctx context.Context, CharityMrys []domain.Cha
 }
 
 func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	if err := a.db.GetDBGorm(ctx).Create(&CharityMrys).Error; err != nil {
+	if err := a.db.GetDBGorm(ctx).Set("gorm:save_associations", false).Create(&CharityMrys).Error; err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
 
@@ -56,10 +56,11 @@ func (a CharityMrysSQL) Update(ctx context.Context, CharityMrys domain.CharityMr
 }
 
 func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, perPage int, sort string, search string) (domain.CharityMrysPagination, error) {
-	db := a.db.GetDBPG(ctx)
-	total, err := db.Model(&domain.CharityMrys{}).Count()
-	if err != nil {
-		return domain.CharityMrysPagination{}, errors.Wrap(err, "error get total CharityMryss")
+	db := a.db.GetDBGorm(ctx)
+	var total int64
+	err := db.Model(&domain.CharityMrys{}).Count(&total)
+	if err.Error != nil {
+		return domain.CharityMrysPagination{}, errors.Wrap(err.Error, "error get total CharityMryss")
 	}
 
 	pagination := utils.Pagination{
@@ -73,16 +74,17 @@ func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, per
 	}
 	meta := pagination.ToMeta()
 
-	q := db.Model(&domain.CharityMrys{}).Limit(perPage).Order(meta.Sort).Offset(meta.Offset)
+	q := db.Model(&domain.CharityMrys{}).
+		Preload("Branch").Limit(perPage).Order(meta.Sort).Offset(meta.Offset)
 	if len(search) > 0 {
-		q.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(search)+"%")
+		q.Where("LOWER(charity_mrys.name) LIKE ?", "%"+strings.ToLower(search)+"%")
 	}
 
 	var list []domain.CharityMrys
 
-	err = q.Select(&list)
-	if err != nil {
-		return domain.CharityMrysPagination{}, errors.Wrap(err, "error listing pagination CharityMryss")
+	err = q.Find(&list)
+	if err.Error != nil {
+		return domain.CharityMrysPagination{}, errors.Wrap(err.Error, "error listing pagination CharityMryss")
 	}
 
 	return domain.CharityMrysPagination{

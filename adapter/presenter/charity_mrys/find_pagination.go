@@ -22,6 +22,7 @@ func (a findPaginationCharityMrysPresenter) Output(result domain.CharityMrysPagi
 			Month:       model.Month,
 			Year:        model.Year,
 			Description: model.Description,
+			Branch:      model.Branch,
 			CreatedAt:   model.CreatedAt,
 		})
 	}

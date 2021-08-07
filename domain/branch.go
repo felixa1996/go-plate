@@ -11,7 +11,7 @@ var (
 )
 
 type Branch struct {
-	Id          string    `json:"id" example:"1"`
+	Id          string    `gorm:"primaryKey" json:"id" example:"1"`
 	Code        string    `json:"code" example:"PTK"`
 	Name        string    `json:"name" example:"Pontianak"`
 	Address     string    `json:"address" example:"Pontianak"`
@@ -40,4 +40,8 @@ type (
 
 func DeleteBranch(success bool) bool {
 	return success
+}
+
+func (Branch) TableName() string {
+	return "branch"
 }

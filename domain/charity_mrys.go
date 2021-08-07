@@ -17,6 +17,8 @@ type CharityMrys struct {
 	Month       int32     `json:"Month" example:"1"`
 	Year        int32     `json:"Year" example:"2021"`
 	Description string    `json:"Description" example:"description"`
+	BranchID    string    `json:"-"`
+	Branch      Branch    `gorm:"foreignKey:BranchID;branch:ID" json:"branch" `
 	CreatedAt   time.Time `json:"CreatedAt" example:"2019-11-09T21:21:46+00:00"`
 }
 
@@ -40,7 +42,7 @@ type (
 	}
 )
 
-func NewCharityMrys(ID string, Name string, Amount Money, Month int32, Year int32, Description string, createdAt time.Time) CharityMrys {
+func NewCharityMrys(ID string, Name string, Amount Money, Month int32, Year int32, Description string, Branch Branch, createdAt time.Time) CharityMrys {
 	return CharityMrys{
 		Id:          ID,
 		Name:        Name,
@@ -48,6 +50,7 @@ func NewCharityMrys(ID string, Name string, Amount Money, Month int32, Year int3
 		Month:       Month,
 		Year:        Year,
 		Description: Description,
+		Branch:      Branch,
 		CreatedAt:   createdAt,
 	}
 }

@@ -55,11 +55,12 @@ func (a findPaginationCharityMrysInteractor) Execute(ctx context.Context, curren
 
 // List of response
 type FindPaginationCharityMrysOutputData struct {
-	Id          string    `json:"id"`
-	Name        string    `json:"name"`
-	Amount      float64   `json:"Amount"`
-	Month       int32     `json:"Month"`
-	Year        int32     `json:"Year"`
-	Description string    `json:"Description"`
-	CreatedAt   time.Time `json:"CreatedAt"`
+	Id          string        `json:"id"`
+	Name        string        `json:"name"`
+	Amount      float64       `json:"Amount"`
+	Month       int32         `json:"Month"`
+	Year        int32         `json:"Year"`
+	Description string        `json:"Description"`
+	Branch      domain.Branch `json:"branch"`
+	CreatedAt   time.Time     `json:"CreatedAt"`
 }

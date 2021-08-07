@@ -23,6 +23,7 @@ func (a createBulkCharityMrysPresenter) Output(model []domain.CharityMrys) []use
 			Year:        detail.Year,
 			Month:       detail.Month,
 			Description: detail.Description,
+			Branch:      detail.Branch,
 			CreatedAt:   detail.CreatedAt.Format(time.RFC3339),
 		}
 		data = append(data, d)

@@ -15,13 +15,14 @@ type (
 
 	// CreateBulkCharityMrysInput input data
 	CreateBulkCharityMrysInput struct {
-		Id          string `json:"id" example:"1"`
-		Name        string `json:"name" validate:"required" example:"Leo Messi"`
-		Amount      int32  `json:"amount" validate:"required" example:"40000"`
-		MonthFrom   int32  `json:"month_from" validate:"required" example:"2"`
-		MonthTo     int32  `json:"month_to" validate:"required" example:"10"`
-		Year        int32  `json:"year" validate:"required" example:"2021"`
-		Description string `json:"description" example:"description"`
+		Id          string        `json:"id" example:"1"`
+		Name        string        `json:"name" validate:"required" example:"Leo Messi"`
+		Amount      int32         `json:"amount" validate:"required" example:"40000"`
+		MonthFrom   int32         `json:"month_from" validate:"required" example:"2"`
+		MonthTo     int32         `json:"month_to" validate:"required" example:"10"`
+		Year        int32         `json:"year" validate:"required" example:"2021"`
+		Branch      domain.Branch `json:"branch"`
+		Description string        `json:"description" example:"description"`
 	}
 
 	// CreateBulkCharityMrysPresenter output port
@@ -31,13 +32,14 @@ type (
 
 	// CreateBulkCharityMrysOutput output data
 	CreateBulkCharityMrysOutput struct {
-		Id          string       `json:"id"`
-		Name        string       `json:"name" validate:"required"`
-		Amount      domain.Money `json:"amount" validate:"required"`
-		Month       int32        `json:"month" validate:"required"`
-		Year        int32        `json:"year" validate:"required"`
-		Description string       `json:"description"`
-		CreatedAt   string       `json:"created_at"`
+		Id          string        `json:"id"`
+		Name        string        `json:"name" validate:"required"`
+		Amount      domain.Money  `json:"amount" validate:"required"`
+		Month       int32         `json:"month" validate:"required"`
+		Year        int32         `json:"year" validate:"required"`
+		Description string        `json:"description"`
+		Branch      domain.Branch `json:"branch"`
+		CreatedAt   string        `json:"created_at"`
 	}
 
 	createBulkCharityMrysInteractor struct {
@@ -74,6 +76,7 @@ func (a createBulkCharityMrysInteractor) Execute(ctx context.Context, input Crea
 			i,
 			input.Year,
 			input.Description,
+			input.Branch,
 			time.Now(),
 		)
 		data = append(data, model)

@@ -21,6 +21,7 @@ func (a createCharityMrysPresenter) Output(model domain.CharityMrys) usecase.Cre
 		Year:        model.Year,
 		Month:       model.Month,
 		Description: model.Description,
+		Branch:      model.Branch,
 		CreatedAt:   model.CreatedAt.Format(time.RFC3339),
 	}
 }

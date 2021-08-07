@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/felixa1996/go-plate/adapter/repository"
+	"github.com/felixa1996/go-plate/domain"
 	"github.com/go-pg/pg/extra/pgdebug"
 	"github.com/go-pg/pg/v10"
 
@@ -79,11 +80,15 @@ func NewPostgresHandler(c *config) (*postgresHandler, error) {
 
 	dbGorm, err := gorm.Open(postgres.Open(dsGorm), &gorm.Config{
 		PrepareStmt:            true,
-		SkipDefaultTransaction: true,
+		SkipDefaultTransaction: false,
+		FullSaveAssociations:   false,
 	})
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	dbGorm.AutoMigrate(&domain.Branch{})
+	dbGorm.AutoMigrate(&domain.CharityMrys{})
 
 	return &postgresHandler{db: db, dbPG: dbPG, dbGorm: dbGorm}, nil
 }

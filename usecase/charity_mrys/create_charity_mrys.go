@@ -15,12 +15,13 @@ type (
 
 	// CreateCharityMrysInput input data
 	CreateCharityMrysInput struct {
-		Id          string `json:"id"`
-		Name        string `json:"name" validate:"required"`
-		Amount      int32  `json:"amount" validate:"required"`
-		Month       int32  `json:"month" validate:"required"`
-		Year        int32  `json:"year" validate:"required"`
-		Description string `json:"description"`
+		Id          string        `json:"id"`
+		Name        string        `json:"name" validate:"required"`
+		Amount      int32         `json:"amount" validate:"required"`
+		Month       int32         `json:"month" validate:"required"`
+		Year        int32         `json:"year" validate:"required"`
+		Description string        `json:"description"`
+		Branch      domain.Branch `json:"branch"`
 	}
 
 	// CreateCharityMrysPresenter output port
@@ -30,13 +31,14 @@ type (
 
 	// CreateCharityMrysOutput output data
 	CreateCharityMrysOutput struct {
-		Id          string       `json:"id"`
-		Name        string       `json:"name" validate:"required"`
-		Amount      domain.Money `json:"amount" validate:"required"`
-		Month       int32        `json:"month" validate:"required"`
-		Year        int32        `json:"year" validate:"required"`
-		Description string       `json:"description"`
-		CreatedAt   string       `json:"created_at"`
+		Id          string        `json:"id"`
+		Name        string        `json:"name" validate:"required"`
+		Amount      domain.Money  `json:"amount" validate:"required"`
+		Month       int32         `json:"month" validate:"required"`
+		Year        int32         `json:"year" validate:"required"`
+		Description string        `json:"description"`
+		Branch      domain.Branch `json:"branch"`
+		CreatedAt   string        `json:"created_at"`
 	}
 
 	createCharityMrysInteractor struct {
@@ -71,6 +73,7 @@ func (a createCharityMrysInteractor) Execute(ctx context.Context, input CreateCh
 		input.Month,
 		input.Year,
 		input.Description,
+		input.Branch,
 		time.Now(),
 	)
 

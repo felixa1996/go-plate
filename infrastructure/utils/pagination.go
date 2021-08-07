@@ -12,7 +12,7 @@ type Pagination struct {
 	PerPage     int
 	CurrentPage int
 	TotalPage   int
-	Total       int
+	Total       int64
 	Offset      int
 	Sort        string
 	SortList    map[string]string
@@ -42,7 +42,7 @@ func (p *Pagination) getPageCount() {
 		p.PerPage = 1
 	} else {
 		pageCountFloat := math.Ceil(float64(p.Total) / float64(p.PerPage))
-		p.PerPage = int(pageCountFloat)
+		p.TotalPage = int(pageCountFloat)
 	}
 }
 
