@@ -10,6 +10,10 @@ Currently support raw db,go-pg,gorm
 **Swagger**
 http://localhost:8000/vhry/data/swagger/index.html
 
+**Install kafka and configure**
+cd /server/kafka/
+docker-compose up
+
 **Generate Swagger Documentation**
 make generate_swagger
 
