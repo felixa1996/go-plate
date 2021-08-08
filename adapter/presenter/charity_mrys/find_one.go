@@ -19,6 +19,9 @@ func (a findCharityMrysPresenter) Output(model domain.CharityMrys) usecase.FindC
 		Month:       model.Month,
 		Year:        model.Year,
 		Description: model.Description,
+		UserID:      model.UserID,
+		Branch:      model.Branch,
+		Username:    model.Username,
 		CreatedAt:   model.CreatedAt,
 	}
 }

@@ -24,6 +24,9 @@ func (a findAllCharityMrysPresenter) Output(result domain.CharityMrysAll) usecas
 			Month:       model.Month,
 			Year:        model.Year,
 			Description: model.Description,
+			UserID:      model.UserID,
+			Username:    model.Username,
+			Branch:      model.Branch,
 			CreatedAt:   model.CreatedAt.Format(time.RFC3339),
 		})
 	}

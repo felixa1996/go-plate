@@ -61,6 +61,8 @@ type FindPaginationCharityMrysOutputData struct {
 	Month       int32         `json:"Month"`
 	Year        int32         `json:"Year"`
 	Description string        `json:"Description"`
+	UserID      string        `json:"user_id"`
+	Username    string        `json:"username"`
 	Branch      domain.Branch `json:"branch"`
 	CreatedAt   time.Time     `json:"CreatedAt"`
 }

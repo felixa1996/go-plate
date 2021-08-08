@@ -21,8 +21,8 @@ type (
 		MonthFrom   int32         `json:"month_from" validate:"required" example:"2"`
 		MonthTo     int32         `json:"month_to" validate:"required" example:"10"`
 		Year        int32         `json:"year" validate:"required" example:"2021"`
-		Branch      domain.Branch `json:"branch"`
 		Description string        `json:"description" example:"description"`
+		Branch      domain.Branch `json:"branch"`
 	}
 
 	// CreateBulkCharityMrysPresenter output port
@@ -38,6 +38,8 @@ type (
 		Month       int32         `json:"month" validate:"required"`
 		Year        int32         `json:"year" validate:"required"`
 		Description string        `json:"description"`
+		UserID      string        `json:"user_id"`
+		Username    string        `json:"username"`
 		Branch      domain.Branch `json:"branch"`
 		CreatedAt   string        `json:"created_at"`
 	}
@@ -45,6 +47,7 @@ type (
 	createBulkCharityMrysInteractor struct {
 		repo       domain.CharityMrysRepository
 		presenter  CreateBulkCharityMrysPresenter
+		auth       *domain.UserJwt
 		ctxTimeout time.Duration
 	}
 )
@@ -53,11 +56,13 @@ type (
 func NewCreateBulkCharityMrysInteractor(
 	repo domain.CharityMrysRepository,
 	presenter CreateBulkCharityMrysPresenter,
+	auth *domain.UserJwt,
 	t time.Duration,
 ) CreateBulkCharityMrysUseCase {
 	return createBulkCharityMrysInteractor{
 		repo:       repo,
 		presenter:  presenter,
+		auth:       auth,
 		ctxTimeout: t,
 	}
 }
@@ -79,6 +84,8 @@ func (a createBulkCharityMrysInteractor) Execute(ctx context.Context, input Crea
 			input.Branch,
 			time.Now(),
 		)
+		model.UserID = a.auth.Id
+		model.Username = a.auth.Username
 		data = append(data, model)
 	}
 

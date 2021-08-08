@@ -23,13 +23,16 @@ type (
 		Output(domain.CharityMrys) FindCharityMrysOutput
 	}
 	FindCharityMrysOutput struct {
-		Id          string    `json:"id"`
-		Name        string    `json:"name"`
-		Amount      float64   `json:"Amount"`
-		Month       int32     `json:"Month"`
-		Year        int32     `json:"Year"`
-		Description string    `json:"Description"`
-		CreatedAt   time.Time `json:"CreatedAt"`
+		Id          string        `json:"id"`
+		Name        string        `json:"name"`
+		Amount      float64       `json:"Amount"`
+		Month       int32         `json:"Month"`
+		Year        int32         `json:"Year"`
+		Description string        `json:"Description"`
+		UserID      string        `json:"user_id"`
+		Username    string        `json:"username"`
+		Branch      domain.Branch `json:"branch"`
+		CreatedAt   time.Time     `json:"CreatedAt"`
 	}
 
 	findCharityMrysInteractor struct {

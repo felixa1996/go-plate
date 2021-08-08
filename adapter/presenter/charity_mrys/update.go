@@ -22,6 +22,8 @@ func (a updateCharityMrysPresenter) Output(model domain.CharityMrys) usecase.Upd
 		Month:       model.Month,
 		Description: model.Description,
 		Branch:      model.Branch,
+		UserID:      model.UserID,
+		Username:    model.Username,
 		CreatedAt:   model.CreatedAt.Format(time.RFC3339),
 	}
 }

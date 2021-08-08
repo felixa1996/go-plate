@@ -170,6 +170,7 @@ func (g gorillaMux) buildFindAllTransferAction() *negroni.Negroni {
 // @Summary Create account
 // @Description Create account
 // @Tags Accounts
+// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param data body domain.Account true "Create account"
@@ -281,6 +282,7 @@ func (g gorillaMux) buildFindPaginationCharityMrysAction() *negroni.Negroni {
 // @Summary Create Charity Mrys
 // @Description Create Charity Mrys
 // @Tags CharityMrys
+// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param data body domain.CharityMrys true "Create charity mrys"
@@ -288,7 +290,8 @@ func (g gorillaMux) buildFindPaginationCharityMrysAction() *negroni.Negroni {
 // @Router /v1/charity-mrys [post]
 func (g gorillaMux) buildCreateCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.CharityMrysCreateOne(g.db, g.log, g.ctxTimeout, g.validator)
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.CharityMrysCreateOne(g.db, g.log, g.ctxTimeout, g.validator, auth)
 		act.Execute(res, req)
 	}
 
@@ -303,6 +306,7 @@ func (g gorillaMux) buildCreateCharityMrysAction() *negroni.Negroni {
 // @Summary Update Charity Mrys By ID
 // @Description Update Charity Mrys By ID
 // @Tags CharityMrys
+// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param data body domain.CharityMrys true "Update charity mrys"
@@ -311,7 +315,8 @@ func (g gorillaMux) buildCreateCharityMrysAction() *negroni.Negroni {
 // @Router /v1/charity-mrys/{id} [patch]
 func (g gorillaMux) buildUpdateCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.CharityMrysUpdateOne(g.db, g.log, g.ctxTimeout, g.validator)
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.CharityMrysUpdateOne(g.db, g.log, g.ctxTimeout, g.validator, auth)
 
 		var (
 			vars = mux.Vars(req)
@@ -335,6 +340,7 @@ func (g gorillaMux) buildUpdateCharityMrysAction() *negroni.Negroni {
 // @Summary Create Bulk Charity Mrys
 // @Description Create Bulk Charity Mrys
 // @Tags CharityMrys
+// @Security ApiKeyAuth
 // @Accept json
 // @Produce  json
 // @Param data body usecase.CreateBulkCharityMrysInput true "Create charity mrys"
@@ -342,7 +348,8 @@ func (g gorillaMux) buildUpdateCharityMrysAction() *negroni.Negroni {
 // @Router /v1/charity-mrys/create-bulk [post]
 func (g gorillaMux) buildCreateBulkCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.CharityMrysCreateBulk(g.db, g.log, g.ctxTimeout, g.validator)
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.CharityMrysCreateBulk(g.db, g.log, g.ctxTimeout, g.validator, auth)
 		act.Execute(res, req)
 	}
 

@@ -22,14 +22,15 @@ func NewCharityMrysSQL(db SQL) CharityMrysSQL {
 }
 
 func (a CharityMrysSQL) CreateBulk(ctx context.Context, CharityMrys []domain.CharityMrys) ([]domain.CharityMrys, error) {
-	if err := a.db.InsertPG(ctx, "name", &CharityMrys); err != nil {
-		return []domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
+	if err := a.db.GetDBGorm(ctx).Create(&CharityMrys).Error; err != nil {
+		return []domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrysBulk")
 	}
+
 	return CharityMrys, nil
 }
 
 func (a CharityMrysSQL) Create(ctx context.Context, CharityMrys domain.CharityMrys) (domain.CharityMrys, error) {
-	if err := a.db.GetDBGorm(ctx).Set("gorm:save_associations", false).Create(&CharityMrys).Error; err != nil {
+	if err := a.db.GetDBGorm(ctx).Create(&CharityMrys).Error; err != nil {
 		return domain.CharityMrys{}, errors.Wrap(err, "error creating CharityMrys")
 	}
 
@@ -75,7 +76,11 @@ func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, per
 	meta := pagination.ToMeta()
 
 	q := db.Model(&domain.CharityMrys{}).
-		Preload("Branch").Limit(perPage).Order(meta.Sort).Offset(meta.Offset)
+		Preload("Branch").
+		Limit(perPage).
+		Order(meta.Sort).
+		Offset(meta.Offset)
+
 	if len(search) > 0 {
 		q.Where("LOWER(charity_mrys.name) LIKE ?", "%"+strings.ToLower(search)+"%")
 	}
@@ -94,13 +99,16 @@ func (a CharityMrysSQL) FindPagination(ctx context.Context, currentPage int, per
 }
 
 func (a CharityMrysSQL) FindAll(ctx context.Context, auth *domain.UserJwt) (domain.CharityMrysAll, error) {
-	var query = "SELECT * FROM charity_mrys"
-
 	var list []domain.CharityMrys
 
-	_, err := a.db.QueryContextPG(ctx, &list, query)
-	if err != nil {
-		return domain.CharityMrysAll{}, errors.Wrap(err, "error listing CharityMryss")
+	db := a.db.GetDBGorm(ctx)
+	res := db.Model(&domain.CharityMrys{}).
+		Preload("Branch").
+		Order("charity_mrys.year ASC,charity_mrys.month ASC").
+		Find(&list)
+
+	if res.Error != nil {
+		return domain.CharityMrysAll{}, errors.Wrap(res.Error, "error listing all CharityMryss")
 	}
 
 	return domain.CharityMrysAll{
@@ -109,21 +117,14 @@ func (a CharityMrysSQL) FindAll(ctx context.Context, auth *domain.UserJwt) (doma
 }
 
 func (a CharityMrysSQL) FindByID(ctx context.Context, ID string) (domain.CharityMrys, error) {
-	tx, ok := ctx.Value("TransactionContextKey").(Tx)
-	if !ok {
-		var err error
-		tx, err = a.db.BeginTx(ctx)
-		if err != nil {
-			return domain.CharityMrys{}, errors.Wrap(err, "error find CharityMrys by id")
-		}
-	}
-
 	var one domain.CharityMrys
 
-	query := "SELECT * FROM charity_mrys WHERE id = ? LIMIT 1"
+	db := a.db.GetDBGorm(ctx)
+	res := db.Model(&domain.CharityMrys{}).
+		Preload("Branch").
+		Where("charity_mrys.id = ?", ID).First(&one)
 
-	_, err := tx.QueryRowContextPG(ctx, &one, query, ID)
-	if err != nil {
+	if res.Error != nil {
 		return domain.CharityMrys{}, domain.ErrCharityMrysNotFound
 	}
 	return one, nil

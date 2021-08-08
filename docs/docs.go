@@ -58,6 +58,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create account",
                 "consumes": [
                     "application/json"
@@ -164,6 +169,11 @@ var doc = `{
         },
         "/v1/charity-mrys": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create Charity Mrys",
                 "consumes": [
                     "application/json"
@@ -198,6 +208,11 @@ var doc = `{
         },
         "/v1/charity-mrys/create-bulk": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create Bulk Charity Mrys",
                 "consumes": [
                     "application/json"
@@ -386,6 +401,11 @@ var doc = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update Charity Mrys By ID",
                 "consumes": [
                     "application/json"
@@ -500,6 +520,10 @@ var doc = `{
                     "type": "integer",
                     "example": 1
                 },
+                "Userame": {
+                    "type": "string",
+                    "example": "usename"
+                },
                 "Year": {
                     "type": "integer",
                     "example": 2021
@@ -514,6 +538,10 @@ var doc = `{
                 "name": {
                     "type": "string",
                     "example": "Leo Messi"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },

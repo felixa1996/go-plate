@@ -37,6 +37,8 @@ type (
 		Month       int32         `json:"month" validate:"required"`
 		Year        int32         `json:"year" validate:"required"`
 		Description string        `json:"description"`
+		UserID      string        `json:"user_id"`
+		Username    string        `json:"username"`
 		Branch      domain.Branch `json:"branch"`
 		CreatedAt   string        `json:"created_at"`
 	}
@@ -44,6 +46,7 @@ type (
 	createCharityMrysInteractor struct {
 		repo       domain.CharityMrysRepository
 		presenter  CreateCharityMrysPresenter
+		auth       *domain.UserJwt
 		ctxTimeout time.Duration
 	}
 )
@@ -52,11 +55,13 @@ type (
 func NewCreateCharityMrysInteractor(
 	repo domain.CharityMrysRepository,
 	presenter CreateCharityMrysPresenter,
+	auth *domain.UserJwt,
 	t time.Duration,
 ) CreateCharityMrysUseCase {
 	return createCharityMrysInteractor{
 		repo:       repo,
 		presenter:  presenter,
+		auth:       auth,
 		ctxTimeout: t,
 	}
 }
@@ -76,6 +81,8 @@ func (a createCharityMrysInteractor) Execute(ctx context.Context, input CreateCh
 		input.Branch,
 		time.Now(),
 	)
+	model.UserID = a.auth.Id
+	model.Username = a.auth.Username
 
 	model, err := a.repo.Create(ctx, model)
 	if err != nil {

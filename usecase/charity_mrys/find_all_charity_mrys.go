@@ -59,11 +59,14 @@ func (a findAllCharityMrysInteractor) Execute(ctx context.Context) (FindAllChari
 }
 
 type FindAllCharityMrysData struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	Amount      float64 `json:"amount"`
-	Month       int32   `json:"month"`
-	Year        int32   `json:"year"`
-	Description string  `json:"description"`
-	CreatedAt   string  `json:"created_at"`
+	ID          string        `json:"id"`
+	Name        string        `json:"name"`
+	Amount      float64       `json:"amount"`
+	Month       int32         `json:"month"`
+	Year        int32         `json:"year"`
+	Description string        `json:"description"`
+	UserID      string        `json:"user_id"`
+	Username    string        `json:"username"`
+	Branch      domain.Branch `json:"branch"`
+	CreatedAt   string        `json:"created_at"`
 }

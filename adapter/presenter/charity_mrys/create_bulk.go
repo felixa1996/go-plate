@@ -23,6 +23,8 @@ func (a createBulkCharityMrysPresenter) Output(model []domain.CharityMrys) []use
 			Year:        detail.Year,
 			Month:       detail.Month,
 			Description: detail.Description,
+			UserID:      detail.UserID,
+			Username:    detail.Username,
 			Branch:      detail.Branch,
 			CreatedAt:   detail.CreatedAt.Format(time.RFC3339),
 		}

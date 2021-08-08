@@ -61,11 +61,12 @@ func CharityMrysDeleteOne(db repository.SQL, log logger.Logger, ctxTimeout time.
 	return act
 }
 
-func CharityMrysCreateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator) action.CreateCharityMrysAction {
+func CharityMrysCreateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator, auth *domain.UserJwt) action.CreateCharityMrysAction {
 	var (
 		uc = usecase.NewCreateCharityMrysInteractor(
 			repository.NewCharityMrysSQL(db),
 			presenter.NewCreateCharityMrysPresenter(),
+			auth,
 			ctxTimeout,
 		)
 		act = action.NewCreateCharityMrysAction(uc, log, validator)
@@ -73,11 +74,12 @@ func CharityMrysCreateOne(db repository.SQL, log logger.Logger, ctxTimeout time.
 	return act
 }
 
-func CharityMrysUpdateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator) action.UpdateCharityMrysAction {
+func CharityMrysUpdateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator, auth *domain.UserJwt) action.UpdateCharityMrysAction {
 	var (
 		uc = usecase.NewUpdateCharityMrysInteractor(
 			repository.NewCharityMrysSQL(db),
 			presenter.NewUpdateCharityMrysPresenter(),
+			auth,
 			ctxTimeout,
 		)
 		act = action.NewUpdateCharityMrysAction(uc, log, validator)
@@ -85,11 +87,12 @@ func CharityMrysUpdateOne(db repository.SQL, log logger.Logger, ctxTimeout time.
 	return act
 }
 
-func CharityMrysCreateBulk(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator) action.CreateBulkCharityMrysAction {
+func CharityMrysCreateBulk(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator, auth *domain.UserJwt) action.CreateBulkCharityMrysAction {
 	var (
 		uc = usecase.NewCreateBulkCharityMrysInteractor(
 			repository.NewCharityMrysSQL(db),
 			presenter.NewCreateBulkCharityMrysPresenter(),
+			auth,
 			ctxTimeout,
 		)
 		act = action.NewCreateBulkCharityMrysAction(uc, log, validator)

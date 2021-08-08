@@ -20,8 +20,10 @@ type (
 		Amount      int32         `json:"amount" validate:"required"`
 		Month       int32         `json:"month" validate:"required"`
 		Year        int32         `json:"year" validate:"required"`
-		Branch      domain.Branch `json:"branch"`
 		Description string        `json:"description"`
+		UserID      int32         `json:"user_id"`
+		Username    string        `json:"username"`
+		Branch      domain.Branch `json:"branch"`
 	}
 
 	// UpdateCharityMrysPresenter output port
@@ -37,6 +39,8 @@ type (
 		Month       int32         `json:"month" validate:"required"`
 		Year        int32         `json:"year" validate:"required"`
 		Description string        `json:"description"`
+		UserID      string        `json:"user_id"`
+		Username    string        `json:"username"`
 		Branch      domain.Branch `json:"branch"`
 		CreatedAt   string        `json:"crated_at"`
 	}
@@ -44,6 +48,7 @@ type (
 	updateCharityMrysInteractor struct {
 		repo       domain.CharityMrysRepository
 		presenter  UpdateCharityMrysPresenter
+		auth       *domain.UserJwt
 		ctxTimeout time.Duration
 	}
 )
@@ -52,11 +57,13 @@ type (
 func NewUpdateCharityMrysInteractor(
 	repo domain.CharityMrysRepository,
 	presenter UpdateCharityMrysPresenter,
+	auth *domain.UserJwt,
 	t time.Duration,
 ) UpdateCharityMrysUseCase {
 	return updateCharityMrysInteractor{
 		repo:       repo,
 		presenter:  presenter,
+		auth:       auth,
 		ctxTimeout: t,
 	}
 }
@@ -76,6 +83,8 @@ func (a updateCharityMrysInteractor) Execute(ctx context.Context, input UpdateCh
 		input.Branch,
 		time.Now(),
 	)
+	model.UserID = a.auth.Id
+	model.Username = a.auth.Username
 
 	model, err := a.repo.Update(ctx, model, id)
 	if err != nil {

@@ -53,6 +53,9 @@ definitions:
       Month:
         example: 1
         type: integer
+      Userame:
+        example: usename
+        type: string
       Year:
         example: 2021
         type: integer
@@ -63,6 +66,9 @@ definitions:
         type: string
       name:
         example: Leo Messi
+        type: string
+      user_id:
+        example: "1"
         type: string
     type: object
   domain.CharityMrysAll:
@@ -174,6 +180,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/domain.Account'
+      security:
+      - ApiKeyAuth: []
       summary: Create account
       tags:
       - Accounts
@@ -240,6 +248,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/domain.CharityMrys'
+      security:
+      - ApiKeyAuth: []
       summary: Create Charity Mrys
       tags:
       - CharityMrys
@@ -309,6 +319,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/domain.CharityMrys'
+      security:
+      - ApiKeyAuth: []
       summary: Update Charity Mrys By ID
       tags:
       - CharityMrys
@@ -333,6 +345,8 @@ paths:
             items:
               $ref: '#/definitions/domain.CharityMrys'
             type: array
+      security:
+      - ApiKeyAuth: []
       summary: Create Bulk Charity Mrys
       tags:
       - CharityMrys
