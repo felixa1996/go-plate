@@ -1,13 +1,18 @@
 package action
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	gouuid "github.com/satori/go.uuid"
 
 	"github.com/felixa1996/go-plate/adapter/api/logging"
 	"github.com/felixa1996/go-plate/adapter/api/response"
 	"github.com/felixa1996/go-plate/adapter/logger"
 	"github.com/felixa1996/go-plate/adapter/validator"
+	"github.com/felixa1996/go-plate/infrastructure/broker"
 	usecase "github.com/felixa1996/go-plate/usecase/charity_mrys"
 )
 
@@ -66,6 +71,9 @@ func (a CreateCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request)
 		response.NewError(err, http.StatusInternalServerError).Send(w)
 		return
 	}
+
+	a.KafkaSendProducer(output)
+
 	logging.NewInfo(a.log, logKey, http.StatusCreated).Log("success creating charity_mrys")
 
 	response.NewSuccess(output, http.StatusCreated).Send(w)
@@ -82,4 +90,24 @@ func (a CreateCharityMrysAction) validateInput(input usecase.CreateCharityMrysIn
 	}
 
 	return msgs
+}
+
+func (a CreateCharityMrysAction) KafkaSendProducer(result ...interface{}) {
+
+	b, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	t := &broker.KafkaProducer{
+		Ctx:    context.Background(),
+		Log:    a.log,
+		LogKey: logKey,
+		Topic:  "charity_mrys_insert",
+		Key:    gouuid.NewV4().String(),
+		Value:  string(b),
+	}
+
+	go broker.Produce(t)
 }

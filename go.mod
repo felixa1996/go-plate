@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
-	github.com/auth0/go-jwt-middleware v1.0.1 // indirect
+	github.com/auth0/go-jwt-middleware v1.0.1
 	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
@@ -24,6 +24,7 @@ require (
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
+	github.com/segmentio/kafka-go v0.4.17
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/http-swagger v1.0.0
@@ -36,6 +37,6 @@ require (
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/tools v0.1.4 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
-	gorm.io/driver/postgres v1.1.0 // indirect
-	gorm.io/gorm v1.21.12 // indirect
+	gorm.io/driver/postgres v1.1.0
+	gorm.io/gorm v1.21.12
 )

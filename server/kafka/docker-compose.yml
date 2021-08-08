@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+  mord_zookeeper:
+    image: zookeeper
+    restart: always
+    container_name: mord_zookeeper
+    hostname: mord_zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+    networks:
+      - mord_network
+
+  mord_kafka:
+    image: wurstmeister/kafka
+    container_name: mord_kafka
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://mord_kafka:9092
+      # KAFKA_ADVERTISED_HOST_NAME: mord_network
+      KAFKA_ZOOKEEPER_CONNECT: mord_zookeeper:2181
+      # KAFKA_CREATE_TOPICS: "user_update_2:1:1,user_deleted:1:1"
+    networks:
+      - mord_network
+  
+  mord_kafka_manager:
+    image: hlebalbau/kafka-manager:stable
+    container_name: mord_kafka_manager
+    ports:
+      - '9000:9000'
+    environment:
+      ZK_HOSTS: 'mord_zookeeper:2181'
+      APPLICATION_SECRET: 'random-secret'
+    command: -Dpidfile.path=/dev/null
+    networks:
+      - mord_network
+
+networks:
+  mord_network:
+    name: mord_network
+    driver: bridge
+          

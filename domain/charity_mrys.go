@@ -18,7 +18,7 @@ type CharityMrys struct {
 	Year        int32     `json:"Year" example:"2021"`
 	Description string    `json:"Description" example:"description"`
 	BranchID    string    `json:"-"`
-	Branch      Branch    `gorm:"foreignKey:BranchID;branch:ID" json:"branch" `
+	Branch      Branch    `json:"branch" gorm:"foreignKey:BranchID;branch:ID"`
 	CreatedAt   time.Time `json:"CreatedAt" example:"2019-11-09T21:21:46+00:00"`
 }
 

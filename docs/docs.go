@@ -254,10 +254,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.CharityMrys"
-                            }
+                            "$ref": "#/definitions/domain.CharityMrysAll"
                         }
                     }
                 }
@@ -455,6 +452,35 @@ var doc = `{
                 }
             }
         },
+        "domain.Branch": {
+            "type": "object",
+            "properties": {
+                "CreatedAt": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
+                },
+                "Description": {
+                    "type": "string",
+                    "example": "description"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "Pontianak"
+                },
+                "code": {
+                    "type": "string",
+                    "example": "PTK"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "953c294b-4535-4656-9fd8-be58zzd0402a9a1x"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Pontianak"
+                }
+            }
+        },
         "domain.CharityMrys": {
             "type": "object",
             "properties": {
@@ -478,6 +504,9 @@ var doc = `{
                     "type": "integer",
                     "example": 2021
                 },
+                "branch": {
+                    "$ref": "#/definitions/domain.Branch"
+                },
                 "id": {
                     "type": "string",
                     "example": "1"
@@ -485,6 +514,17 @@ var doc = `{
                 "name": {
                     "type": "string",
                     "example": "Leo Messi"
+                }
+            }
+        },
+        "domain.CharityMrysAll": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.CharityMrys"
+                    }
                 }
             }
         },
@@ -538,6 +578,9 @@ var doc = `{
                 "amount": {
                     "type": "integer",
                     "example": 40000
+                },
+                "branch": {
+                    "$ref": "#/definitions/domain.Branch"
                 },
                 "description": {
                     "type": "string",

@@ -1,13 +1,18 @@
 package action
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	gouuid "github.com/satori/go.uuid"
 
 	"github.com/felixa1996/go-plate/adapter/api/logging"
 	"github.com/felixa1996/go-plate/adapter/api/response"
 	"github.com/felixa1996/go-plate/adapter/logger"
 	"github.com/felixa1996/go-plate/adapter/validator"
+	"github.com/felixa1996/go-plate/infrastructure/broker"
 	usecase "github.com/felixa1996/go-plate/usecase/charity_mrys"
 )
 
@@ -16,6 +21,8 @@ type CreateBulkCharityMrysAction struct {
 	log       logger.Logger
 	validator validator.Validator
 }
+
+const logKey = "create_bulk_charity_mrys"
 
 func NewCreateBulkCharityMrysAction(uc usecase.CreateBulkCharityMrysUseCase, log logger.Logger, v validator.Validator) CreateBulkCharityMrysAction {
 	return CreateBulkCharityMrysAction{
@@ -26,7 +33,6 @@ func NewCreateBulkCharityMrysAction(uc usecase.CreateBulkCharityMrysUseCase, log
 }
 
 func (a CreateBulkCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request) {
-	const logKey = "create_bulk_charity_mrys"
 
 	var input usecase.CreateBulkCharityMrysInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -66,6 +72,9 @@ func (a CreateBulkCharityMrysAction) Execute(w http.ResponseWriter, r *http.Requ
 		response.NewError(err, http.StatusInternalServerError).Send(w)
 		return
 	}
+
+	a.KafkaSendProducer(output)
+
 	logging.NewInfo(a.log, logKey, http.StatusCreated).Log("success creating bulk charity_mrys")
 
 	response.NewSuccess(output, http.StatusCreated).Send(w)
@@ -82,4 +91,24 @@ func (a CreateBulkCharityMrysAction) validateInput(input usecase.CreateBulkChari
 	}
 
 	return msgs
+}
+
+func (a CreateBulkCharityMrysAction) KafkaSendProducer(result ...interface{}) {
+
+	b, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	t := &broker.KafkaProducer{
+		Ctx:    context.Background(),
+		Log:    a.log,
+		LogKey: logKey,
+		Topic:  "charity_mrys_insert",
+		Key:    gouuid.NewV4().String(),
+		Value:  string(b),
+	}
+
+	go broker.Produce(t)
 }

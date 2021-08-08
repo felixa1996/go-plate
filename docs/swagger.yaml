@@ -18,6 +18,27 @@ definitions:
         example: Leo Messi
         type: string
     type: object
+  domain.Branch:
+    properties:
+      CreatedAt:
+        example: "2019-11-09T21:21:46+00:00"
+        type: string
+      Description:
+        example: description
+        type: string
+      address:
+        example: Pontianak
+        type: string
+      code:
+        example: PTK
+        type: string
+      id:
+        example: 953c294b-4535-4656-9fd8-be58zzd0402a9a1x
+        type: string
+      name:
+        example: Pontianak
+        type: string
+    type: object
   domain.CharityMrys:
     properties:
       Amount:
@@ -35,12 +56,21 @@ definitions:
       Year:
         example: 2021
         type: integer
+      branch:
+        $ref: '#/definitions/domain.Branch'
       id:
         example: "1"
         type: string
       name:
         example: Leo Messi
         type: string
+    type: object
+  domain.CharityMrysAll:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.CharityMrys'
+        type: array
     type: object
   domain.CharityMrysPagination:
     properties:
@@ -71,6 +101,8 @@ definitions:
       amount:
         example: 40000
         type: integer
+      branch:
+        $ref: '#/definitions/domain.Branch'
       description:
         example: description
         type: string
@@ -314,9 +346,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/domain.CharityMrys'
-            type: array
+            $ref: '#/definitions/domain.CharityMrysAll'
       security:
       - ApiKeyAuth: []
       summary: Find All CharityMrys

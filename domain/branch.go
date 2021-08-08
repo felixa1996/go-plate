@@ -11,7 +11,7 @@ var (
 )
 
 type Branch struct {
-	Id          string    `gorm:"primaryKey" json:"id" example:"1"`
+	Id          string    `gorm:"primaryKey" json:"id" example:"953c294b-4535-4656-9fd8-be58zzd0402a9a1x"`
 	Code        string    `json:"code" example:"PTK"`
 	Name        string    `json:"name" example:"Pontianak"`
 	Address     string    `json:"address" example:"Pontianak"`
