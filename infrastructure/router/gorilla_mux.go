@@ -132,6 +132,12 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/accounts", g.buildCreateAccountAction()).Methods(http.MethodPost)
 	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
 
+	api.Handle("/receipt-lunar", g.buildCreateReceiptLunarAction()).Methods(http.MethodPost)
+	api.Handle("/receipt-lunar/list-pagination/{currentPage}/{perPage}/{sort}", g.buildFindPaginationReceiptLunarAction()).
+		Queries("search", "{search}").
+		Methods(http.MethodGet)
+	api.Handle("/receipt-lunar/{id}", g.buildFindReceiptLunarAction()).Methods(http.MethodGet)
+
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys/{id}", g.buildUpdateCharityMrysAction()).Methods(http.MethodPatch)
@@ -266,6 +272,100 @@ func (g gorillaMux) buildFindPaginationCharityMrysAction() *negroni.Negroni {
 		q.Add("perPage", vars["perPage"])
 		q.Add("sort", vars["sort"])
 		q.Add("search", vars["search"])
+		req.URL.RawQuery = q.Encode()
+
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// CreateReceiptLunar godoc
+// @Summary Create Receipt Lunar
+// @Description Create Receipt Lunar
+// @Tags ReceiptLunar
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Param data body usecase.CreateReceiptLunarInput true "Create receipt lunar"
+// @Success 201 {object} domain.ReceiptLunar
+// @Router /v1/receipt-lunar [post]
+func (g gorillaMux) buildCreateReceiptLunarAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.ReceiptLunarCreateOne(g.db, g.log, g.ctxTimeout, g.validator, auth)
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// FindPaginationReceiptLunar godoc
+// @Summary Find Pagination ReceiptLunar
+// @Tags ReceiptLunar
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} domain.ReceiptLunarPagination
+// @Param currentPage path int true "CurrentPage"
+// @Param perPage path int true "PerPage"
+// @Param sort path string true "Sort"
+// @Param search query string false "Search"
+// @Router /v1/receipt-lunar/list-pagination/{currentPage}/{perPage}/{sort} [get]
+func (g gorillaMux) buildFindPaginationReceiptLunarAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.ReceiptLunarFindPagination(g.db, g.log, g.ctxTimeout, auth)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("currentPage", vars["currentPage"])
+		q.Add("perPage", vars["perPage"])
+		q.Add("sort", vars["sort"])
+		q.Add("search", vars["search"])
+		req.URL.RawQuery = q.Encode()
+
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// FindReceiptLunar godoc
+// @Summary Find One ReceiptLunar By ID
+// @Tags ReceiptLunar
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} domain.ReceiptLunar
+// @Param id path string true "ID"
+// @Router /v1/receipt-lunar/{id} [get]
+func (g gorillaMux) buildFindReceiptLunarAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.ReceiptLunarFindOne(g.db, g.log, g.ctxTimeout, auth)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("id", vars["id"])
 		req.URL.RawQuery = q.Encode()
 
 		act.Execute(res, req)

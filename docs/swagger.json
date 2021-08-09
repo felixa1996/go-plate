@@ -429,6 +429,137 @@
                     }
                 }
             }
+        },
+        "/v1/receipt-lunar": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create Receipt Lunar",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ReceiptLunar"
+                ],
+                "summary": "Create Receipt Lunar",
+                "parameters": [
+                    {
+                        "description": "Create receipt lunar",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.CreateReceiptLunarInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReceiptLunar"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/receipt-lunar/list-pagination/{currentPage}/{perPage}/{sort}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ReceiptLunar"
+                ],
+                "summary": "Find Pagination ReceiptLunar",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CurrentPage",
+                        "name": "currentPage",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "PerPage",
+                        "name": "perPage",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReceiptLunarPagination"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/receipt-lunar/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ReceiptLunar"
+                ],
+                "summary": "Find One ReceiptLunar By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReceiptLunar"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -578,6 +709,91 @@
                 }
             }
         },
+        "domain.ReceiptLunar": {
+            "type": "object",
+            "properties": {
+                "branch": {
+                    "$ref": "#/definitions/domain.Branch"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "internation_date": {
+                    "type": "string",
+                    "example": "2021-08-04"
+                },
+                "lunar_date": {
+                    "type": "string",
+                    "example": "2021-08-04"
+                },
+                "receipt_lunar_detail": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ReceiptLunarDetail"
+                    }
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 40000
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "username"
+                }
+            }
+        },
+        "domain.ReceiptLunarDetail": {
+            "type": "object",
+            "properties": {
+                "CreatedAt": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "receipt_lunar": {
+                    "$ref": "#/definitions/domain.ReceiptLunar"
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 40000
+                }
+            }
+        },
+        "domain.ReceiptLunarPagination": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ReceiptLunar"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/domain.MetaPagination"
+                }
+            }
+        },
         "usecase.CreateBulkCharityMrysInput": {
             "type": "object",
             "required": [
@@ -618,6 +834,36 @@
                 "year": {
                     "type": "integer",
                     "example": 2021
+                }
+            }
+        },
+        "usecase.CreateReceiptLunarInput": {
+            "type": "object",
+            "required": [
+                "international_date",
+                "lunar_date"
+            ],
+            "properties": {
+                "branch": {
+                    "$ref": "#/definitions/domain.Branch"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "international_date": {
+                    "type": "string"
+                },
+                "lunar_date": {
+                    "type": "string"
+                },
+                "receipt_lunar_detail": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ReceiptLunarDetail"
+                    }
                 }
             }
         }

@@ -19,9 +19,9 @@ type CharityMrys struct {
 	Description string    `json:"Description" example:"description"`
 	UserID      string    `json:"user_id" example:"1"`
 	Username    string    `json:"Userame" example:"usename"`
-	BranchID    string    `json:"-"`
-	Branch      Branch    `json:"branch" gorm:"foreignKey:BranchID;branch:ID"`
-	CreatedAt   time.Time `json:"CreatedAt" example:"2019-11-09T21:21:46+00:00"`
+	BranchId    string    `json:"-"`
+	Branch      Branch    `json:"branch" gorm:"foreignKey:BranchId;branch:ID"`
+	CreatedAt   time.Time `json:"created_at" example:"2019-11-09T21:21:46+00:00"`
 }
 
 type CharityMrysPagination struct {

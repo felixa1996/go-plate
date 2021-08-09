@@ -102,6 +102,65 @@ definitions:
       totalPage:
         type: integer
     type: object
+  domain.ReceiptLunar:
+    properties:
+      branch:
+        $ref: '#/definitions/domain.Branch'
+      created_at:
+        example: "2019-11-09T21:21:46+00:00"
+        type: string
+      description:
+        type: string
+      id:
+        example: "1"
+        type: string
+      internation_date:
+        example: "2021-08-04"
+        type: string
+      lunar_date:
+        example: "2021-08-04"
+        type: string
+      receipt_lunar_detail:
+        items:
+          $ref: '#/definitions/domain.ReceiptLunarDetail'
+        type: array
+      total:
+        example: 40000
+        type: integer
+      user_id:
+        example: "1"
+        type: string
+      username:
+        example: username
+        type: string
+    type: object
+  domain.ReceiptLunarDetail:
+    properties:
+      CreatedAt:
+        example: "2019-11-09T21:21:46+00:00"
+        type: string
+      description:
+        type: string
+      id:
+        example: "1"
+        type: string
+      name:
+        type: string
+      receipt_lunar:
+        $ref: '#/definitions/domain.ReceiptLunar'
+      total:
+        example: 40000
+        type: integer
+    type: object
+  domain.ReceiptLunarPagination:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.ReceiptLunar'
+        type: array
+      meta:
+        $ref: '#/definitions/domain.MetaPagination'
+    type: object
   usecase.CreateBulkCharityMrysInput:
     properties:
       amount:
@@ -133,6 +192,26 @@ definitions:
     - month_to
     - name
     - year
+    type: object
+  usecase.CreateReceiptLunarInput:
+    properties:
+      branch:
+        $ref: '#/definitions/domain.Branch'
+      description:
+        type: string
+      id:
+        type: string
+      international_date:
+        type: string
+      lunar_date:
+        type: string
+      receipt_lunar_detail:
+        items:
+          $ref: '#/definitions/domain.ReceiptLunarDetail'
+        type: array
+    required:
+    - international_date
+    - lunar_date
     type: object
 host: localhost:8000/vhry/data/
 info:
@@ -402,6 +481,88 @@ paths:
       summary: Find Pagination CharityMrys
       tags:
       - CharityMrys
+  /v1/receipt-lunar:
+    post:
+      consumes:
+      - application/json
+      description: Create Receipt Lunar
+      parameters:
+      - description: Create receipt lunar
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.CreateReceiptLunarInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.ReceiptLunar'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Receipt Lunar
+      tags:
+      - ReceiptLunar
+  /v1/receipt-lunar/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ReceiptLunar'
+      security:
+      - ApiKeyAuth: []
+      summary: Find One ReceiptLunar By ID
+      tags:
+      - ReceiptLunar
+  /v1/receipt-lunar/list-pagination/{currentPage}/{perPage}/{sort}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: CurrentPage
+        in: path
+        name: currentPage
+        required: true
+        type: integer
+      - description: PerPage
+        in: path
+        name: perPage
+        required: true
+        type: integer
+      - description: Sort
+        in: path
+        name: sort
+        required: true
+        type: string
+      - description: Search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ReceiptLunarPagination'
+      security:
+      - ApiKeyAuth: []
+      summary: Find Pagination ReceiptLunar
+      tags:
+      - ReceiptLunar
 securityDefinitions:
   ApiKeyAuth:
     in: header

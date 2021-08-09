@@ -89,6 +89,8 @@ func NewPostgresHandler(c *config) (*postgresHandler, error) {
 
 	dbGorm.AutoMigrate(&domain.Branch{})
 	dbGorm.AutoMigrate(&domain.CharityMrys{})
+	dbGorm.AutoMigrate(&domain.ReceiptLunar{})
+	dbGorm.AutoMigrate(&domain.ReceiptLunarDetail{})
 
 	return &postgresHandler{db: db, dbPG: dbPG, dbGorm: dbGorm}, nil
 }

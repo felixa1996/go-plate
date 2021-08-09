@@ -27,7 +27,7 @@ type Account struct {
 	Name      string    `json:"name" example:"Leo Messi"`
 	Cpf       string    `json:"Cpf" example:"00.00.111.11"`
 	Balance   Money     `json:"Balance" example:"40000"`
-	CreatedAt time.Time `json:"CreatedAt" example:"2019-11-09T21:21:46+00:00"`
+	CreatedAt time.Time `json:"created_at" example:"2019-11-09T21:21:46+00:00"`
 }
 
 type DeleteMessage struct {

@@ -64,5 +64,5 @@ type FindPaginationCharityMrysOutputData struct {
 	UserID      string        `json:"user_id"`
 	Username    string        `json:"username"`
 	Branch      domain.Branch `json:"branch"`
-	CreatedAt   time.Time     `json:"CreatedAt"`
+	CreatedAt   time.Time     `json:"created_at"`
 }

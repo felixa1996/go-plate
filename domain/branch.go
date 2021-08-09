@@ -16,7 +16,7 @@ type Branch struct {
 	Name        string    `json:"name" example:"Pontianak"`
 	Address     string    `json:"address" example:"Pontianak"`
 	Description string    `json:"Description" example:"description"`
-	CreatedAt   time.Time `json:"CreatedAt" example:"2019-11-09T21:21:46+00:00"`
+	CreatedAt   time.Time `json:"created_at" example:"2019-11-09T21:21:46+00:00"`
 }
 
 type BranchPagination struct {
