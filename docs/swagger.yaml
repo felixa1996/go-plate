@@ -1,28 +1,7 @@
 basePath: /
 definitions:
-  domain.Account:
-    properties:
-      Balance:
-        example: 40000
-        type: integer
-      Cpf:
-        example: 00.00.111.11
-        type: string
-      CreatedAt:
-        example: "2019-11-09T21:21:46+00:00"
-        type: string
-      id:
-        example: "1"
-        type: string
-      name:
-        example: Leo Messi
-        type: string
-    type: object
   domain.Branch:
     properties:
-      CreatedAt:
-        example: "2019-11-09T21:21:46+00:00"
-        type: string
       Description:
         example: description
         type: string
@@ -31,6 +10,9 @@ definitions:
         type: string
       code:
         example: PTK
+        type: string
+      created_at:
+        example: "2019-11-09T21:21:46+00:00"
         type: string
       id:
         example: 953c294b-4535-4656-9fd8-be58zzd0402a9a1x
@@ -44,9 +26,6 @@ definitions:
       Amount:
         example: 40000
         type: integer
-      CreatedAt:
-        example: "2019-11-09T21:21:46+00:00"
-        type: string
       Description:
         example: description
         type: string
@@ -61,6 +40,9 @@ definitions:
         type: integer
       branch:
         $ref: '#/definitions/domain.Branch'
+      created_at:
+        example: "2019-11-09T21:21:46+00:00"
+        type: string
       id:
         example: "1"
         type: string
@@ -136,7 +118,7 @@ definitions:
     type: object
   domain.ReceiptLunarDetail:
     properties:
-      CreatedAt:
+      created_at:
         example: "2019-11-09T21:21:46+00:00"
         type: string
       description:
@@ -213,6 +195,20 @@ definitions:
     - international_date
     - lunar_date
     type: object
+  usecase.DeleteOneCharityMrysOutput:
+    properties:
+      id:
+        type: string
+      success:
+        type: boolean
+    type: object
+  usecase.DeleteOneReceiptLunarOutput:
+    properties:
+      id:
+        type: string
+      success:
+        type: boolean
+    type: object
 host: localhost:8000/vhry/data/
 info:
   contact:
@@ -225,89 +221,6 @@ info:
   title: Data API
   version: "1.0"
 paths:
-  /v1/accounts:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Account'
-      security:
-      - ApiKeyAuth: []
-      summary: Find All Accounts
-      tags:
-      - Accounts
-    post:
-      consumes:
-      - application/json
-      description: Create account
-      parameters:
-      - description: Create account
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/domain.Account'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/domain.Account'
-      security:
-      - ApiKeyAuth: []
-      summary: Create account
-      tags:
-      - Accounts
-  /v1/accounts/{account_id}/balance:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Account ID
-        in: path
-        name: account_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Account'
-      security:
-      - ApiKeyAuth: []
-      summary: Find Balance Account By ID
-      tags:
-      - Accounts
-  /v1/accounts/{id}:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Account ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Account'
-      security:
-      - ApiKeyAuth: []
-      summary: Delete Account By ID
-      tags:
-      - Accounts
   /v1/charity-mrys:
     post:
       consumes:
@@ -346,9 +259,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: success
+          description: OK
           schema:
-            type: boolean
+            $ref: '#/definitions/usecase.DeleteOneCharityMrysOutput'
       security:
       - ApiKeyAuth: []
       summary: Delete One Charity Mrys By ID
@@ -506,6 +419,27 @@ paths:
       tags:
       - ReceiptLunar
   /v1/receipt-lunar/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Receipt Lunar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/usecase.DeleteOneReceiptLunarOutput'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete One Receipt Lunar By ID
+      tags:
+      - ReceiptLunar
     get:
       consumes:
       - application/json
@@ -525,6 +459,34 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Find One ReceiptLunar By ID
+      tags:
+      - ReceiptLunar
+    patch:
+      consumes:
+      - application/json
+      description: Update ReceiptLunar By ID
+      parameters:
+      - description: Update Receipt Lunar
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReceiptLunar'
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.ReceiptLunar'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Receipt Lunar By ID
       tags:
       - ReceiptLunar
   /v1/receipt-lunar/list-pagination/{currentPage}/{perPage}/{sort}:

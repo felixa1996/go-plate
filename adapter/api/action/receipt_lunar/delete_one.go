@@ -13,23 +13,23 @@ import (
 	"github.com/felixa1996/go-plate/adapter/logger"
 	"github.com/felixa1996/go-plate/domain"
 	"github.com/felixa1996/go-plate/infrastructure/broker"
-	usecase "github.com/felixa1996/go-plate/usecase/charity_mrys"
+	usecase "github.com/felixa1996/go-plate/usecase/receipt_lunar"
 )
 
-type DeleteOneCharityMrysAction struct {
-	uc  usecase.DeleteOneCharityMrysUseCase
+type DeleteOneReceiptLunarAction struct {
+	uc  usecase.DeleteOneReceiptLunarUseCase
 	log logger.Logger
 }
 
-func NewDeleteOneCharityMrysAction(uc usecase.DeleteOneCharityMrysUseCase, log logger.Logger) DeleteOneCharityMrysAction {
-	return DeleteOneCharityMrysAction{
+func NewDeleteOneReceiptLunarAction(uc usecase.DeleteOneReceiptLunarUseCase, log logger.Logger) DeleteOneReceiptLunarAction {
+	return DeleteOneReceiptLunarAction{
 		uc:  uc,
 		log: log,
 	}
 }
 
-func (a DeleteOneCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request) {
-	const logKey = "delete_one_charity_mrys"
+func (a DeleteOneReceiptLunarAction) Execute(w http.ResponseWriter, r *http.Request) {
+	const logKey = "delete_one_receipt_lunar"
 
 	var id = r.URL.Query().Get("id")
 	fmt.Print("Text " + id)
@@ -37,13 +37,13 @@ func (a DeleteOneCharityMrysAction) Execute(w http.ResponseWriter, r *http.Reque
 	output, err := a.uc.Execute(r.Context(), id)
 	if err != nil {
 		switch err {
-		case domain.ErrCharityMrysNotFound:
+		case domain.ErrReceiptLunarNotFound:
 			logging.NewError(
 				a.log,
 				err,
 				logKey,
 				http.StatusBadRequest,
-			).Log("error fetching one charity_mrys")
+			).Log("error fetching one receipt_lunar")
 
 			response.NewError(err, http.StatusBadRequest).Send(w)
 			return
@@ -53,7 +53,7 @@ func (a DeleteOneCharityMrysAction) Execute(w http.ResponseWriter, r *http.Reque
 				err,
 				logKey,
 				http.StatusInternalServerError,
-			).Log("error when returning charity_mrys")
+			).Log("error when returning charity mrys")
 
 			response.NewError(err, http.StatusInternalServerError).Send(w)
 			return
@@ -67,7 +67,7 @@ func (a DeleteOneCharityMrysAction) Execute(w http.ResponseWriter, r *http.Reque
 	response.NewSuccess(output, http.StatusOK).Send(w)
 }
 
-func (a DeleteOneCharityMrysAction) KafkaSendProducer(result ...interface{}) {
+func (a DeleteOneReceiptLunarAction) KafkaSendProducer(result ...interface{}) {
 
 	b, err := json.Marshal(result)
 	if err != nil {

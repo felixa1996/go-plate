@@ -10,6 +10,6 @@ func NewDeleteOneCharityMrysPresenter() usecase.DeleteOneCharityMrysPresenter {
 	return deleteOneCharityMrysPresenter{}
 }
 
-func (a deleteOneCharityMrysPresenter) Output(success bool) usecase.DeleteOneCharityMrysOutput {
-	return usecase.DeleteOneCharityMrysOutput{Success: success}
+func (a deleteOneCharityMrysPresenter) Output(success bool, Id string) usecase.DeleteOneCharityMrysOutput {
+	return usecase.DeleteOneCharityMrysOutput{Success: success, Id: Id}
 }

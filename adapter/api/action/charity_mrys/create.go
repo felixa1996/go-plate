@@ -104,10 +104,10 @@ func (a CreateCharityMrysAction) KafkaSendProducer(result ...interface{}) {
 		Ctx:    context.Background(),
 		Log:    a.log,
 		LogKey: logKey,
-		Topic:  "charity_mrys_insert",
+		Topic:  "charity_mrys_insert_update",
 		Key:    gouuid.NewV4().String(),
 		Value:  string(b),
 	}
 
-	go broker.Produce(t)
+	broker.Produce(t)
 }

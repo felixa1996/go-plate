@@ -38,17 +38,18 @@ func ReceiptLunarFindOne(db repository.SQL, log logger.Logger, ctxTimeout time.D
 	return act
 }
 
-// func ReceiptLunarDeleteOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration) action.DeleteOneReceiptLunarAction {
-// 	var (
-// 		uc = usecase.NewDeleteOneReceiptLunarInteractor(
-// 			repository.NewReceiptLunarSQL(db),
-// 			presenter.NewDeleteOneReceiptLunarPresenter(),
-// 			ctxTimeout,
-// 		)
-// 		act = action.NewDeleteOneReceiptLunarAction(uc, log)
-// 	)
-// 	return act
-// }
+func ReceiptLunarDeleteOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, auth *domain.UserJwt) action.DeleteOneReceiptLunarAction {
+	var (
+		uc = usecase.NewDeleteOneReceiptLunarInteractor(
+			repository.NewReceiptLunarSQL(db),
+			presenter.NewDeleteOneReceiptLunarPresenter(),
+			auth,
+			ctxTimeout,
+		)
+		act = action.NewDeleteOneReceiptLunarAction(uc, log)
+	)
+	return act
+}
 
 func ReceiptLunarCreateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator, auth *domain.UserJwt) action.CreateReceiptLunarAction {
 	var (
@@ -63,15 +64,15 @@ func ReceiptLunarCreateOne(db repository.SQL, log logger.Logger, ctxTimeout time
 	return act
 }
 
-// func ReceiptLunarUpdateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator, auth *domain.UserJwt) action.UpdateReceiptLunarAction {
-// 	var (
-// 		uc = usecase.NewUpdateReceiptLunarInteractor(
-// 			repository.NewReceiptLunarSQL(db),
-// 			presenter.NewUpdateReceiptLunarPresenter(),
-// 			auth,
-// 			ctxTimeout,
-// 		)
-// 		act = action.NewUpdateReceiptLunarAction(uc, log, validator)
-// 	)
-// 	return act
-// }
+func ReceiptLunarUpdateOne(db repository.SQL, log logger.Logger, ctxTimeout time.Duration, validator validator.Validator, auth *domain.UserJwt) action.UpdateReceiptLunarAction {
+	var (
+		uc = usecase.NewUpdateReceiptLunarInteractor(
+			repository.NewReceiptLunarSQL(db),
+			presenter.NewUpdateReceiptLunarPresenter(),
+			auth,
+			ctxTimeout,
+		)
+		act = action.NewUpdateReceiptLunarAction(uc, log, validator)
+	)
+	return act
+}

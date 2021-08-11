@@ -13,29 +13,29 @@ import (
 	"github.com/felixa1996/go-plate/adapter/logger"
 	"github.com/felixa1996/go-plate/adapter/validator"
 	"github.com/felixa1996/go-plate/infrastructure/broker"
-	usecase "github.com/felixa1996/go-plate/usecase/charity_mrys"
+	usecase "github.com/felixa1996/go-plate/usecase/receipt_lunar"
 )
 
-type UpdateCharityMrysAction struct {
-	uc        usecase.UpdateCharityMrysUseCase
+type UpdateReceiptLunarAction struct {
+	uc        usecase.UpdateReceiptLunarUseCase
 	log       logger.Logger
 	validator validator.Validator
 }
 
-func NewUpdateCharityMrysAction(uc usecase.UpdateCharityMrysUseCase, log logger.Logger, v validator.Validator) UpdateCharityMrysAction {
-	return UpdateCharityMrysAction{
+func NewUpdateReceiptLunarAction(uc usecase.UpdateReceiptLunarUseCase, log logger.Logger, v validator.Validator) UpdateReceiptLunarAction {
+	return UpdateReceiptLunarAction{
 		uc:        uc,
 		log:       log,
 		validator: v,
 	}
 }
 
-func (a UpdateCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request) {
-	const logKey = "update_charity_mrys"
+func (a UpdateReceiptLunarAction) Execute(w http.ResponseWriter, r *http.Request) {
+	const logKey = "update_receipt_lunar"
 
 	var id = r.URL.Query().Get("id")
 
-	var input usecase.UpdateCharityMrysInput
+	var input usecase.UpdateReceiptLunarInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		logging.NewError(
 			a.log,
@@ -68,7 +68,7 @@ func (a UpdateCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request)
 			err,
 			logKey,
 			http.StatusInternalServerError,
-		).Log("error when updating a new charity_mrys")
+		).Log("error when updating a new receipt_lunar")
 
 		response.NewError(err, http.StatusInternalServerError).Send(w)
 		return
@@ -76,12 +76,12 @@ func (a UpdateCharityMrysAction) Execute(w http.ResponseWriter, r *http.Request)
 
 	a.KafkaSendProducer(output)
 
-	logging.NewInfo(a.log, logKey, http.StatusCreated).Log("success updating charity_mrys")
+	logging.NewInfo(a.log, logKey, http.StatusCreated).Log("success updating receipt_lunar")
 
 	response.NewSuccess(output, http.StatusCreated).Send(w)
 }
 
-func (a UpdateCharityMrysAction) validateInput(input usecase.UpdateCharityMrysInput) []string {
+func (a UpdateReceiptLunarAction) validateInput(input usecase.UpdateReceiptLunarInput) []string {
 	var msgs []string
 
 	err := a.validator.Validate(input)
@@ -94,7 +94,7 @@ func (a UpdateCharityMrysAction) validateInput(input usecase.UpdateCharityMrysIn
 	return msgs
 }
 
-func (a UpdateCharityMrysAction) KafkaSendProducer(result ...interface{}) {
+func (a UpdateReceiptLunarAction) KafkaSendProducer(result ...interface{}) {
 
 	b, err := json.Marshal(result)
 	if err != nil {
@@ -106,10 +106,10 @@ func (a UpdateCharityMrysAction) KafkaSendProducer(result ...interface{}) {
 		Ctx:    context.Background(),
 		Log:    a.log,
 		LogKey: logKey,
-		Topic:  "charity_mrys_insert_update",
+		Topic:  "receipt_lunar_insert_update",
 		Key:    gouuid.NewV4().String(),
 		Value:  string(b),
 	}
 
-	broker.Produce(t)
+	go broker.Produce(t)
 }

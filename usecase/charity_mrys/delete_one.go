@@ -20,12 +20,13 @@ type (
 
 	// DeleteOneCharityMrysPresenter output port
 	DeleteOneCharityMrysPresenter interface {
-		Output(bool) DeleteOneCharityMrysOutput
+		Output(bool, string) DeleteOneCharityMrysOutput
 	}
 
 	// FindOneCharityMrysOutput output data
 	DeleteOneCharityMrysOutput struct {
-		Success bool `json:"success"`
+		Success bool   `json:"success"`
+		Id      string `json:"id"`
 	}
 
 	deleteOneCharityMrysInteractor struct {
@@ -48,14 +49,14 @@ func NewDeleteOneCharityMrysInteractor(
 }
 
 // Execute orchestrates the use case
-func (a deleteOneCharityMrysInteractor) Execute(ctx context.Context, ID string) (DeleteOneCharityMrysOutput, error) {
+func (a deleteOneCharityMrysInteractor) Execute(ctx context.Context, Id string) (DeleteOneCharityMrysOutput, error) {
 	ctx, cancel := context.WithTimeout(ctx, a.ctxTimeout)
 	defer cancel()
 
-	model, err := a.repo.DeleteByID(ctx, ID)
+	model, err := a.repo.DeleteByID(ctx, Id)
 	if err != nil {
-		return a.presenter.Output(false), err
+		return a.presenter.Output(false, Id), err
 	}
 
-	return a.presenter.Output(model), nil
+	return a.presenter.Output(model, Id), nil
 }

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"strings"
 
@@ -130,19 +129,13 @@ func (a CharityMrysSQL) FindByID(ctx context.Context, ID string) (domain.Charity
 	return one, nil
 }
 
-func (a CharityMrysSQL) DeleteByID(ctx context.Context, ID string) (bool, error) {
-
-	var (
-		query = "DELETE FROM charity_mrys WHERE id = ?"
-	)
+func (a CharityMrysSQL) DeleteByID(ctx context.Context, Id string) (bool, error) {
 
 	var result domain.CharityMrys
-
-	err := a.db.ExecuteContextPG(ctx, &result, query, ID)
-	switch {
-	case err == sql.ErrNoRows:
+	db := a.db.GetDBGorm(ctx)
+	res := db.Where("id = ?", Id).Delete(result)
+	if res.Error != nil {
 		return false, domain.ErrCharityMrysNotFound
-	default:
-		return domain.DeleteCharityMrys(true), err
 	}
+	return true, nil
 }

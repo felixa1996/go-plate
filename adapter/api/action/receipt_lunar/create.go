@@ -105,7 +105,7 @@ func (a CreateReceiptLunarAction) KafkaSendProducer(result ...interface{}) {
 		Ctx:    context.Background(),
 		Log:    a.log,
 		LogKey: logKey,
-		Topic:  "receipt_lunar_insert",
+		Topic:  "receipt_lunar_insert_update",
 		Key:    gouuid.NewV4().String(),
 		Value:  string(b),
 	}

@@ -47,12 +47,14 @@ func Produce(k *KafkaProducer) error {
 
 	if err != nil {
 		logging.NewError(k.Log, err, k.LogKey, http.StatusInternalServerError).Log("Kafka producer error send")
-		return err
+		panic(err)
+		// return err
 	}
 
 	if err := w.Close(); err != nil {
 		logging.NewError(k.Log, err, k.LogKey, http.StatusInternalServerError).Log("Kafka Writer failed to close")
-		return err
+		panic(err)
+		// return err
 	}
 	logging.NewInfo(k.Log, k.LogKey, http.StatusOK).Log("Success send data " + k.LogKey)
 	return nil

@@ -21,10 +21,8 @@ import (
 	"github.com/felixa1996/go-plate/adapter/api/action"
 	"github.com/felixa1996/go-plate/adapter/api/middleware"
 	"github.com/felixa1996/go-plate/adapter/logger"
-	"github.com/felixa1996/go-plate/adapter/presenter"
 	"github.com/felixa1996/go-plate/adapter/repository"
 	"github.com/felixa1996/go-plate/adapter/validator"
-	"github.com/felixa1996/go-plate/usecase"
 
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
@@ -125,18 +123,13 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 
 	api := router.PathPrefix("/v1").Subrouter()
 
-	api.Handle("/transfers", g.buildFindAllTransferAction()).Methods(http.MethodGet)
-
-	api.Handle("/accounts/{account_id}/balance", g.buildFindBalanceAccountAction()).Methods(http.MethodGet)
-	api.Handle("/accounts/{id}", g.buildDeleteBalanceAccountAction()).Methods(http.MethodDelete)
-	api.Handle("/accounts", g.buildCreateAccountAction()).Methods(http.MethodPost)
-	api.Handle("/accounts", g.buildFindAllAccountAction()).Methods(http.MethodGet)
-
 	api.Handle("/receipt-lunar", g.buildCreateReceiptLunarAction()).Methods(http.MethodPost)
+	api.Handle("/receipt-lunar/{id}", g.buildUpdateReceiptLunarAction()).Methods(http.MethodPatch)
 	api.Handle("/receipt-lunar/list-pagination/{currentPage}/{perPage}/{sort}", g.buildFindPaginationReceiptLunarAction()).
 		Queries("search", "{search}").
 		Methods(http.MethodGet)
 	api.Handle("/receipt-lunar/{id}", g.buildFindReceiptLunarAction()).Methods(http.MethodGet)
+	api.Handle("/receipt-lunar/{id}", g.buildDeleteOneReceiptLunarAction()).Methods(http.MethodDelete)
 
 	api.Handle("/charity-mrys", g.buildCreateCharityMrysAction()).Methods(http.MethodPost)
 	api.Handle("/charity-mrys/create-bulk", g.buildCreateBulkCharityMrysAction()).Methods(http.MethodPost)
@@ -149,79 +142,6 @@ func (g gorillaMux) setAppHandlers(router *mux.Router) {
 	api.Handle("/charity-mrys/{id}", g.buildDeleteOneCharityMrysAction()).Methods(http.MethodDelete)
 
 	api.HandleFunc("/health", action.HealthCheck).Methods(http.MethodGet)
-}
-
-func (g gorillaMux) buildFindAllTransferAction() *negroni.Negroni {
-	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var (
-			uc = usecase.NewFindAllTransferInteractor(
-				repository.NewTransferSQL(g.db),
-				presenter.NewFindAllTransferPresenter(),
-				g.ctxTimeout,
-			)
-			act = action.NewFindAllTransferAction(uc, g.log)
-		)
-
-		act.Execute(res, req)
-	}
-
-	return negroni.New(
-		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
-		negroni.NewRecovery(),
-		negroni.Wrap(handler),
-	)
-}
-
-// CreateAccount godoc
-// @Summary Create account
-// @Description Create account
-// @Tags Accounts
-// @Security ApiKeyAuth
-// @Accept  json
-// @Produce  json
-// @Param data body domain.Account true "Create account"
-// @Success 201 {object} domain.Account
-// @Router /v1/accounts [post]
-func (g gorillaMux) buildCreateAccountAction() *negroni.Negroni {
-	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var (
-			uc = usecase.NewCreateAccountInteractor(
-				repository.NewAccountSQL(g.db),
-				presenter.NewCreateAccountPresenter(),
-				g.ctxTimeout,
-			)
-			act = action.NewCreateAccountAction(uc, g.log, g.validator)
-		)
-
-		act.Execute(res, req)
-	}
-
-	return negroni.New(
-		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
-		negroni.NewRecovery(),
-		negroni.Wrap(handler),
-	)
-}
-
-// FindAccounts godoc
-// @Summary Find All Accounts
-// @Tags Accounts
-// @Security ApiKeyAuth
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} domain.Account
-// @Router /v1/accounts [get]
-func (g gorillaMux) buildFindAllAccountAction() *negroni.Negroni {
-	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var act = route.AccountFindAll(g.db, g.log, g.ctxTimeout)
-		act.Execute(res, req)
-	}
-
-	return negroni.New(
-		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
-		negroni.NewRecovery(),
-		negroni.Wrap(handler),
-	)
 }
 
 // FindCharityMrys godoc
@@ -308,6 +228,40 @@ func (g gorillaMux) buildCreateReceiptLunarAction() *negroni.Negroni {
 	)
 }
 
+// UpdateReceiptLunar godoc
+// @Summary Update Receipt Lunar By ID
+// @Description Update ReceiptLunar By ID
+// @Tags ReceiptLunar
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Param data body domain.ReceiptLunar true "Update Receipt Lunar"
+// @Success 201 {object} domain.ReceiptLunar
+// @Param id path string true "ID"
+// @Router /v1/receipt-lunar/{id} [patch]
+func (g gorillaMux) buildUpdateReceiptLunarAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.ReceiptLunarUpdateOne(g.db, g.log, g.ctxTimeout, g.validator, auth)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("id", vars["id"])
+		req.URL.RawQuery = q.Encode()
+
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
 // FindPaginationReceiptLunar godoc
 // @Summary Find Pagination ReceiptLunar
 // @Tags ReceiptLunar
@@ -359,6 +313,38 @@ func (g gorillaMux) buildFindReceiptLunarAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
 		var act = route.ReceiptLunarFindOne(g.db, g.log, g.ctxTimeout, auth)
+
+		var (
+			vars = mux.Vars(req)
+			q    = req.URL.Query()
+		)
+
+		q.Add("id", vars["id"])
+		req.URL.RawQuery = q.Encode()
+
+		act.Execute(res, req)
+	}
+
+	return negroni.New(
+		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
+		negroni.NewRecovery(),
+		negroni.Wrap(handler),
+	)
+}
+
+// DeleteReceiptLunar godoc
+// @Summary Delete One Receipt Lunar By ID
+// @Tags ReceiptLunar
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} usecase.DeleteOneReceiptLunarOutput
+// @Param id path string true "Receipt Lunar ID"
+// @Router /v1/receipt-lunar/{id} [delete]
+func (g gorillaMux) buildDeleteOneReceiptLunarAction() *negroni.Negroni {
+	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
+		auth := g.felJwt.GetJWTUser(req.Header.Get("Authorization"))
+		var act = route.ReceiptLunarDeleteOne(g.db, g.log, g.ctxTimeout, auth)
 
 		var (
 			vars = mux.Vars(req)
@@ -497,88 +483,12 @@ func (g gorillaMux) buildFindCharityMrysAction() *negroni.Negroni {
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
-// @Success 200 {boolean} boolean "success"
+// @Success 200 {object} usecase.DeleteOneCharityMrysOutput
 // @Param id path string true "Charity Mrys ID"
 // @Router /v1/charity-mrys/{id} [delete]
 func (g gorillaMux) buildDeleteOneCharityMrysAction() *negroni.Negroni {
 	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
 		var act = route.CharityMrysDeleteOne(g.db, g.log, g.ctxTimeout)
-
-		var (
-			vars = mux.Vars(req)
-			q    = req.URL.Query()
-		)
-
-		q.Add("id", vars["id"])
-		req.URL.RawQuery = q.Encode()
-
-		act.Execute(res, req)
-	}
-
-	return negroni.New(
-		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
-		negroni.NewRecovery(),
-		negroni.Wrap(handler),
-	)
-}
-
-// FindBalanceAccounts godoc
-// @Summary Find Balance Account By ID
-// @Tags Accounts
-// @Security ApiKeyAuth
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} domain.Account
-// @Param account_id path string true "Account ID"
-// @Router /v1/accounts/{account_id}/balance [get]
-func (g gorillaMux) buildFindBalanceAccountAction() *negroni.Negroni {
-	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var (
-			uc = usecase.NewFindBalanceAccountInteractor(
-				repository.NewAccountSQL(g.db),
-				presenter.NewFindAccountBalancePresenter(),
-				g.ctxTimeout,
-			)
-			act = action.NewFindAccountBalanceAction(uc, g.log)
-		)
-
-		var (
-			vars = mux.Vars(req)
-			q    = req.URL.Query()
-		)
-
-		q.Add("account_id", vars["account_id"])
-		req.URL.RawQuery = q.Encode()
-
-		act.Execute(res, req)
-	}
-
-	return negroni.New(
-		negroni.HandlerFunc(middleware.NewLogger(g.log).Execute),
-		negroni.NewRecovery(),
-		negroni.Wrap(handler),
-	)
-}
-
-// DeleteAccounts godoc
-// @Summary Delete Account By ID
-// @Tags Accounts
-// @Security ApiKeyAuth
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} domain.Account
-// @Param id path string true "Account ID"
-// @Router /v1/accounts/{id} [delete]
-func (g gorillaMux) buildDeleteBalanceAccountAction() *negroni.Negroni {
-	var handler http.HandlerFunc = func(res http.ResponseWriter, req *http.Request) {
-		var (
-			uc = usecase.NewDeleteBalanceAccountInteractor(
-				repository.NewAccountSQL(g.db),
-				presenter.NewDeleteAccountBalancePresenter(),
-				g.ctxTimeout,
-			)
-			act = action.NewDeleteAccountBalanceAction(uc, g.log)
-		)
 
 		var (
 			vars = mux.Vars(req)

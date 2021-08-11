@@ -31,142 +31,6 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/accounts": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Find All Accounts",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Account"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create account",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Create account",
-                "parameters": [
-                    {
-                        "description": "Create account",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.Account"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Account"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/accounts/{account_id}/balance": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Find Balance Account By ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Account ID",
-                        "name": "account_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Account"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/accounts/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Accounts"
-                ],
-                "summary": "Delete Account By ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Account ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Account"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/charity-mrys": {
             "post": {
                 "security": [
@@ -393,9 +257,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "success",
+                        "description": "OK",
                         "schema": {
-                            "type": "boolean"
+                            "$ref": "#/definitions/usecase.DeleteOneCharityMrysOutput"
                         }
                     }
                 }
@@ -574,42 +438,91 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ReceiptLunar"
+                ],
+                "summary": "Delete One Receipt Lunar By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Receipt Lunar ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.DeleteOneReceiptLunarOutput"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update ReceiptLunar By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ReceiptLunar"
+                ],
+                "summary": "Update Receipt Lunar By ID",
+                "parameters": [
+                    {
+                        "description": "Update Receipt Lunar",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReceiptLunar"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReceiptLunar"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
-        "domain.Account": {
-            "type": "object",
-            "properties": {
-                "Balance": {
-                    "type": "integer",
-                    "example": 40000
-                },
-                "Cpf": {
-                    "type": "string",
-                    "example": "00.00.111.11"
-                },
-                "CreatedAt": {
-                    "type": "string",
-                    "example": "2019-11-09T21:21:46+00:00"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Leo Messi"
-                }
-            }
-        },
         "domain.Branch": {
             "type": "object",
             "properties": {
-                "CreatedAt": {
-                    "type": "string",
-                    "example": "2019-11-09T21:21:46+00:00"
-                },
                 "Description": {
                     "type": "string",
                     "example": "description"
@@ -621,6 +534,10 @@ var doc = `{
                 "code": {
                     "type": "string",
                     "example": "PTK"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
                 },
                 "id": {
                     "type": "string",
@@ -638,10 +555,6 @@ var doc = `{
                 "Amount": {
                     "type": "integer",
                     "example": 40000
-                },
-                "CreatedAt": {
-                    "type": "string",
-                    "example": "2019-11-09T21:21:46+00:00"
                 },
                 "Description": {
                     "type": "string",
@@ -661,6 +574,10 @@ var doc = `{
                 },
                 "branch": {
                     "$ref": "#/definitions/domain.Branch"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2019-11-09T21:21:46+00:00"
                 },
                 "id": {
                     "type": "string",
@@ -772,7 +689,7 @@ var doc = `{
         "domain.ReceiptLunarDetail": {
             "type": "object",
             "properties": {
-                "CreatedAt": {
+                "created_at": {
                     "type": "string",
                     "example": "2019-11-09T21:21:46+00:00"
                 },
@@ -879,6 +796,28 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/domain.ReceiptLunarDetail"
                     }
+                }
+            }
+        },
+        "usecase.DeleteOneCharityMrysOutput": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "usecase.DeleteOneReceiptLunarOutput": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         }

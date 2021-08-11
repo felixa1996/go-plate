@@ -37,14 +37,14 @@ type ReceiptLunarAll struct {
 type (
 	ReceiptLunarRepository interface {
 		Create(context.Context, ReceiptLunar) (ReceiptLunar, error)
-		// Update(context.Context, ReceiptLunar, string) (ReceiptLunar, error)
+		Update(context.Context, ReceiptLunar, string) (ReceiptLunar, error)
 		FindPagination(context.Context, int, int, string, string) (ReceiptLunarPagination, error)
 		FindByID(context.Context, string) (ReceiptLunar, error)
-		// DeleteByID(context.Context, string) (bool, error)
+		DeleteByID(context.Context, string) (bool, error)
 	}
 )
 
-func NewReceiptLunar(Id string, InternationalDate time.Time, LunarDate string, Description string, Branch Branch, ReceiptLunarDetail []ReceiptLunarDetail, createdAt time.Time) ReceiptLunar {
+func NewReceiptLunar(Id string, InternationalDate time.Time, LunarDate string, Description string, Branch Branch, ReceiptLunarDetail []ReceiptLunarDetail, UserId string, Username string, CreatedAt time.Time) ReceiptLunar {
 	return ReceiptLunar{
 		Id:                 Id,
 		InternationalDate:  InternationalDate,
@@ -52,7 +52,9 @@ func NewReceiptLunar(Id string, InternationalDate time.Time, LunarDate string, D
 		Description:        Description,
 		Branch:             Branch,
 		ReceiptLunarDetail: ReceiptLunarDetail,
-		CreatedAt:          createdAt,
+		UserID:             UserId,
+		Username:           Username,
+		CreatedAt:          CreatedAt,
 	}
 }
 

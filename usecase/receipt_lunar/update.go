@@ -8,11 +8,13 @@ import (
 )
 
 type (
-	CreateReceiptLunarUseCase interface {
-		Execute(context.Context, CreateReceiptLunarInput) (CreateReceiptLunarOutput, error)
+	// UpdateReceiptLunarUseCase input port
+	UpdateReceiptLunarUseCase interface {
+		Execute(context.Context, UpdateReceiptLunarInput, string) (UpdateReceiptLunarOutput, error)
 	}
 
-	CreateReceiptLunarInput struct {
+	// UpdateReceiptLunarInput input data
+	UpdateReceiptLunarInput struct {
 		Id                 string                      `json:"id"`
 		InternationalDate  string                      `json:"international_date" validate:"required"`
 		LunarDate          string                      `json:"lunar_date" validate:"required"`
@@ -21,11 +23,13 @@ type (
 		ReceiptLunarDetail []domain.ReceiptLunarDetail `json:"receipt_lunar_detail"`
 	}
 
-	CreateReceiptLunarPresenter interface {
-		Output(domain.ReceiptLunar) CreateReceiptLunarOutput
+	// UpdateReceiptLunarPresenter output port
+	UpdateReceiptLunarPresenter interface {
+		Output(domain.ReceiptLunar) UpdateReceiptLunarOutput
 	}
 
-	CreateReceiptLunarOutput struct {
+	// UpdateReceiptLunarOutput output data
+	UpdateReceiptLunarOutput struct {
 		Id                 string                      `json:"id"`
 		InternationalDate  time.Time                   `json:"internation_date"`
 		LunarDate          string                      `json:"lunar_date"`
@@ -39,21 +43,22 @@ type (
 		CreatedAt          string                      `json:"created_at"`
 	}
 
-	createReceiptLunarInteractor struct {
+	updateReceiptLunarInteractor struct {
 		repo       domain.ReceiptLunarRepository
-		presenter  CreateReceiptLunarPresenter
+		presenter  UpdateReceiptLunarPresenter
 		auth       *domain.UserJwt
 		ctxTimeout time.Duration
 	}
 )
 
-func NewCreateReceiptLunarInteractor(
+// NewUpdateReceiptLunarInteractor updates new updateReceiptLunarInteractor with its dependencies
+func NewUpdateReceiptLunarInteractor(
 	repo domain.ReceiptLunarRepository,
-	presenter CreateReceiptLunarPresenter,
+	presenter UpdateReceiptLunarPresenter,
 	auth *domain.UserJwt,
 	t time.Duration,
-) CreateReceiptLunarUseCase {
-	return createReceiptLunarInteractor{
+) UpdateReceiptLunarUseCase {
+	return updateReceiptLunarInteractor{
 		repo:       repo,
 		presenter:  presenter,
 		auth:       auth,
@@ -61,7 +66,8 @@ func NewCreateReceiptLunarInteractor(
 	}
 }
 
-func (a createReceiptLunarInteractor) Execute(ctx context.Context, input CreateReceiptLunarInput) (CreateReceiptLunarOutput, error) {
+// Execute orchestrates the use case
+func (a updateReceiptLunarInteractor) Execute(ctx context.Context, input UpdateReceiptLunarInput, id string) (UpdateReceiptLunarOutput, error) {
 	ctx, cancel := context.WithTimeout(ctx, a.ctxTimeout)
 	defer cancel()
 
@@ -71,7 +77,7 @@ func (a createReceiptLunarInteractor) Execute(ctx context.Context, input CreateR
 	}
 
 	var model = domain.NewReceiptLunar(
-		domain.NewUUID(),
+		id,
 		internationalDate,
 		input.LunarDate,
 		input.Description,
@@ -82,7 +88,7 @@ func (a createReceiptLunarInteractor) Execute(ctx context.Context, input CreateR
 		time.Now(),
 	)
 
-	model, err = a.repo.Create(ctx, model)
+	model, err = a.repo.Update(ctx, model, id)
 	if err != nil {
 		return a.presenter.Output(domain.ReceiptLunar{}), err
 	}
