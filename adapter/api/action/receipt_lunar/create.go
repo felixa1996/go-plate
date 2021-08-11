@@ -110,5 +110,5 @@ func (a CreateReceiptLunarAction) KafkaSendProducer(result ...interface{}) {
 		Value:  string(b),
 	}
 
-	go broker.Produce(t)
+	broker.Produce(t)
 }

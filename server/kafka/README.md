@@ -1,5 +1,6 @@
 Add cluster
 
+For kafka_manager
 Open localhost:9000
 Cluster name: Primary
 Clusther Zookeeper Host: mord_zookeeper:2181
